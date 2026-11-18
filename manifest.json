@@ -1,7 +1,6 @@
 {
   "name": "Hochzeitsplaner Robin & Corinna",
   "short_name": "Hochzeit",
-  "start_url": "./",
   "scope": "./",
   "display": "standalone",
   "background_color": "#faf6f1",
