@@ -1,0 +1,13 @@
+{
+  "name": "Hochzeitsplaner Robin & Corinna",
+  "short_name": "Hochzeit",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#faf6f1",
+  "theme_color": "#8a5a44",
+  "lang": "de",
+  "icons": [
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}
