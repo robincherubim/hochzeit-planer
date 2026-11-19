@@ -155,8 +155,11 @@ main { max-width: 720px; margin: 0 auto; padding: 6px 16px calc(var(--tabbar-h) 
 .bhero .top { display: flex; justify-content: space-between; align-items: flex-end; gap: 10px; }
 .bhero .big { font: 400 40px/1 var(--serif2); }
 .bhero .small { font: 600 10px/1.4 var(--label); letter-spacing: .2em; text-transform: uppercase; color: var(--sage); }
-.bhero .limit { border: 1px solid var(--line); background: var(--bg); border-radius: 99px; font-family: var(--label); padding: 6px 10px; font-size: 13px; color: var(--muted); }
+.bhero .limit { white-space: nowrap; flex: none; border: 1px solid var(--line); background: var(--bg); border-radius: 99px; font-family: var(--label); padding: 6px 10px; font-size: 13px; color: var(--muted); }
 .bhero .bar { height: 10px; margin: 14px 0 12px; }
+.bdelta { font-size: 13px; color: var(--muted); margin-top: 4px; }
+.bdelta b { font-weight: 600; color: var(--text); }
+.money .done { color: var(--sage); }
 .bgrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
 .bgrid div { background: var(--bg); border-radius: 0; padding: 8px 10px; }
 .bgrid b { display: block; font-size: 16px; }
@@ -357,7 +360,7 @@ dialog.sheet::backdrop { background: rgba(20,12,8,.42); animation: fadebg .2s; }
   <section class="view" id="view-budget" hidden>
     <div class="bhero">
       <div class="top">
-        <div><div class="small">Geplant</div><div class="big num" id="bPlan">–</div></div>
+        <div><div class="small">Voraussichtlich gesamt</div><div class="big num" id="bPlan">–</div><div class="bdelta" id="bDelta"></div></div>
         <button class="limit" id="bLimitBtn">Budget: –</button>
       </div>
       <div class="bar" id="bBarW"><i id="bBar" style="width:0"></i></div>
@@ -458,11 +461,13 @@ dialog.sheet::backdrop { background: rgba(20,12,8,.42); animation: fadebg .2s; }
     <div class="field"><label for="bPosten">Posten</label><input id="bPosten" required autocomplete="off"></div>
     <div class="field"><label for="bKat">Kategorie</label><input id="bKat" list="dlBudgetKat" autocomplete="off" placeholder="z. B. Braut"></div>
     <div class="row2">
-      <div class="field"><label for="bKosten">Kosten (€)</label><input id="bKosten" type="number" inputmode="decimal" min="0" step="1"></div>
-      <div class="field"><label for="bBezahlt">Bezahlt (€)</label><input id="bBezahlt" type="number" inputmode="decimal" min="0" step="1"></div>
+      <div class="field"><label for="bKosten">Geplant (€)</label><input id="bKosten" type="number" inputmode="decimal" min="0" step="1"></div>
+      <div class="field"><label for="bBezahlt">Tatsächlich bezahlt (€)</label><input id="bBezahlt" type="number" inputmode="decimal" min="0" step="1"></div>
     </div>
+    <label class="switch">Abgeschlossen <input type="checkbox" id="bDone"></label>
+    <p class="hint" id="bDiff"></p>
     <div class="stack">
-      <button type="button" class="secondary" id="bFullPaid">Komplett bezahlt</button>
+      <button type="button" class="secondary" id="bFullPaid">Posten abschließen</button>
       <button type="button" class="danger" id="bDelete">Posten löschen</button>
     </div>
   </form>
@@ -585,6 +590,7 @@ function cleanPosten(f) {
   if ('kategorie' in f) o.kategorie = String(f.kategorie || '').trim() || 'Sonstiges';
   if ('kosten' in f) o.kosten = money(f.kosten);
   if ('bezahlt' in f) o.bezahlt = money(f.bezahlt);
+  if ('abgeschlossen' in f) o.abgeschlossen = f.abgeschlossen === true || f.abgeschlossen === 'true';
   return o;
 }
 let toastTimer = null;
@@ -677,7 +683,7 @@ function renderHome() {
   $('tGuests').textContent = guests.length;
   $('tGuestsL').textContent = `Gäste · ${yes} Zusagen`;
   $('tGuestsBar').style.width = (guests.length ? yes / guests.length * 100 : 0) + '%';
-  const plan = posten.reduce((s, p) => s + (p.kosten || 0), 0), limit = db.budget.limit || 0;
+  const plan = posten.reduce((s, p) => s + effCost(p), 0), limit = db.budget.limit || 0;
   $('tBudget').textContent = eur(plan);
   $('tBudgetL').textContent = !limit ? 'geplant' : plan > limit ? `geplant · ${eur(plan - limit)} über Budget` : `von ${eur(limit)} geplant`;
   $('tBudgetBar').style.width = Math.min(100, limit ? plan / limit * 100 : 0) + '%';
@@ -883,10 +889,16 @@ $('gDelete').onclick = async () => {
 // ---------- budget ----------
 const BUD_ORDER = ['Standesamt', 'Feier Standesamt', 'Orte', 'Dienstleister', 'Karten', 'Schmuck', 'Visuelles', 'Bräutigam', 'Braut', 'Blumen', 'Sonstiges'];
 const openCats = new Set(store.get('openCats', []));
+// "kosten" is the planned amount, "bezahlt" what was actually paid. A closed item counts with what
+// was actually paid; an open one with the planned amount (or more, if more was already paid).
+function effCost(p) { return p.abgeschlossen ? (p.bezahlt || 0) : Math.max(p.kosten || 0, p.bezahlt || 0); }
+function restCost(p) { return p.abgeschlossen ? 0 : Math.max(0, (p.kosten || 0) - (p.bezahlt || 0)); }
 function renderBudget() {
   const posten = db.budget.posten, limit = db.budget.limit || 0;
-  const plan = posten.reduce((s, p) => s + (p.kosten || 0), 0), paid = posten.reduce((s, p) => s + (p.bezahlt || 0), 0);
-  $('bPlan').textContent = eur(plan); $('bPaid').textContent = eur(paid); $('bOpen').textContent = eur(Math.max(0, plan - paid));
+  const plan = posten.reduce((s, p) => s + effCost(p), 0), paid = posten.reduce((s, p) => s + (p.bezahlt || 0), 0);
+  const closed = posten.filter((p) => p.abgeschlossen), delta = closed.reduce((s, p) => s + (p.bezahlt || 0) - (p.kosten || 0), 0);
+  $('bPlan').textContent = eur(plan); $('bPaid').textContent = eur(paid); $('bOpen').textContent = eur(posten.reduce((s, p) => s + restCost(p), 0));
+  $('bDelta').innerHTML = closed.length ? `${closed.length} von ${posten.length} abgeschlossen · <b>${eur(Math.abs(delta))} ${delta <= 0 ? 'günstiger' : 'teurer'}</b> als geplant` : `${posten.length} Posten, noch keiner abgeschlossen`;
   $('bLimitBtn').textContent = 'Budget: ' + eur(limit);
   const free = limit - plan; $('bFree').textContent = eur(Math.abs(free)); $('bFreeL').textContent = free >= 0 ? 'noch frei' : 'über Budget';
   $('bFree').style.color = free < 0 ? 'var(--danger)' : '';
@@ -896,16 +908,22 @@ function renderBudget() {
   const rank = (c) => { const i = BUD_ORDER.indexOf(c); return i < 0 ? 99 : i; };
   const keys = [...cats.keys()].sort((a, b) => rank(a) - rank(b) || a.localeCompare(b, 'de'));
   $('budgetList').innerHTML = keys.length ? '<div class="section-title"><h2>Kategorien</h2></div>' + keys.map((c) => {
-    const items = cats.get(c).sort((a, b) => (b.kosten || 0) - (a.kosten || 0));
-    const cs = items.reduce((s, p) => s + (p.kosten || 0), 0), cp = items.reduce((s, p) => s + (p.bezahlt || 0), 0);
+    const items = cats.get(c).sort((a, b) => (a.abgeschlossen ? 1 : 0) - (b.abgeschlossen ? 1 : 0) || effCost(b) - effCost(a));
+    const cs = items.reduce((s, p) => s + effCost(p), 0), cp = items.reduce((s, p) => s + (p.bezahlt || 0), 0);
     return `<details class="bcat card" data-cat="${esc(c)}"${openCats.has(c) ? ' open' : ''}><summary>
       <span class="name">${esc(c)}</span><span class="sum num">${eur(cs)}<small>${cp ? eur(cp) + ' bezahlt' : items.length + ' Posten'}</small></span>
       <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg></summary>
       <div class="items">${items.map((p) => {
-        const full = p.kosten && p.bezahlt >= p.kosten;
+        if (p.abgeschlossen) {
+          const d = (p.bezahlt || 0) - (p.kosten || 0);
+          const note = !p.kosten || !d ? 'wie geplant' : `${eur(Math.abs(d))} ${d < 0 ? 'günstiger' : 'teurer'}`;
+          return `<button class="item noind" data-id="${esc(p.id)}"><div class="main"><div class="title">${esc(p.posten)}</div>
+            <div class="meta"><span class="pill ok">abgeschlossen</span>${p.kosten && d ? `<span class="pill">geplant ${eur(p.kosten)}</span>` : ''}</div></div>
+            <div class="money num">${eur(p.bezahlt)}<small class="done">${note}</small></div></button>`;
+        }
         return `<button class="item noind" data-id="${esc(p.id)}"><div class="main"><div class="title">${esc(p.posten)}</div>
-          ${p.kosten ? `<div class="bar ${full ? 'ok' : ''}" style="margin-top:8px;height:5px"><i style="width:${Math.min(100, (p.bezahlt || 0) / p.kosten * 100)}%"></i></div>` : ''}</div>
-          <div class="money num">${eur(p.kosten)}<small>${full ? 'bezahlt' : p.bezahlt ? eur(p.bezahlt) + ' bezahlt' : 'offen'}</small></div></button>`;
+          ${p.kosten ? `<div class="bar" style="margin-top:8px;height:5px"><i style="width:${Math.min(100, (p.bezahlt || 0) / p.kosten * 100)}%"></i></div>` : ''}</div>
+          <div class="money num">${eur(p.kosten)}<small>${p.bezahlt ? eur(p.bezahlt) + ' bezahlt' : 'offen'}</small></div></button>`;
       }).join('')}</div></details>`;
   }).join('') : '<div class="empty">Noch keine Posten.</div>';
 }
@@ -917,7 +935,9 @@ function openPosten(p) {
   editPosten = p ? p.id : null;
   $('budgetTitle').textContent = p ? 'Posten' : 'Neuer Posten';
   $('bPosten').value = p?.posten || ''; $('bKat').value = p?.kategorie || ''; $('bKosten').value = p ? p.kosten : ''; $('bBezahlt').value = p ? p.bezahlt : '';
+  $('bDone').checked = !!p?.abgeschlossen; updateBudgetDiff();
   $('bDelete').hidden = !p; $('bFullPaid').hidden = !p;
+  if (p) $('bFullPaid').textContent = p.abgeschlossen ? 'Wieder öffnen' : 'Posten abschließen';
   $('dlgBudget').showModal();
   if (!p) setTimeout(() => $('bPosten').focus(), 300);
 }
@@ -930,11 +950,22 @@ async function savePosten(f) {
 }
 $('budgetForm').addEventListener('submit', (e) => {
   e.preventDefault();
-  const f = cleanPosten({ posten: $('bPosten').value, kategorie: $('bKat').value, kosten: $('bKosten').value, bezahlt: $('bBezahlt').value });
+  const f = cleanPosten({ posten: $('bPosten').value, kategorie: $('bKat').value, kosten: $('bKosten').value, bezahlt: $('bBezahlt').value, abgeschlossen: $('bDone').checked });
   if (!f.posten) { $('bPosten').focus(); return; }
   savePosten(f);
 });
-$('bFullPaid').onclick = () => { $('bBezahlt').value = $('bKosten').value; $('budgetForm').requestSubmit(); };
+// Closing keeps the actual amount; if nothing was entered yet, the planned amount is taken as paid.
+$('bFullPaid').onclick = () => {
+  const closing = !$('bDone').checked;
+  if (closing && $('bBezahlt').value.trim() === '') $('bBezahlt').value = $('bKosten').value;
+  $('bDone').checked = closing; $('budgetForm').requestSubmit();
+};
+function updateBudgetDiff() {
+  const k = money($('bKosten').value), b = money($('bBezahlt').value), d = b - k;
+  $('bDiff').textContent = !$('bDone').checked ? (b ? `Noch offen: ${eur(Math.max(0, k - b))}` : '')
+    : !k || !d ? 'Abgeschlossen, wie geplant.' : `Abgeschlossen, ${eur(Math.abs(d))} ${d < 0 ? 'günstiger' : 'teurer'} als geplant.`;
+}
+['bKosten', 'bBezahlt', 'bDone'].forEach((id) => $(id).addEventListener('input', updateBudgetDiff));
 $('bDelete').onclick = async () => {
   const id = editPosten; const p = db.budget.posten.find((x) => x.id === id);
   if (!p || !confirm(`„${p.posten}“ löschen?`)) return;
@@ -998,14 +1029,14 @@ Heute ist ${weekday}, ${fmtDate(isoToday())} (Zeitzone Europe/Berlin). Wer schre
 Es gibt drei Listen:
 1. "aufgaben": id, aufgabe, bereich, datum (JJJJ-MM-TT oder leer), notiz, status (offen|erledigt), verantwortlich (Robin|Corinna|Beide|Nicht zugewiesen). Aufgaben fürs Standesamt haben bereich "Standesamt".
 2. "gaeste": id, name, familie (Kategorie, z. B. Freunde, Verwandte, Elternteil, Trauzeugen), seite (Braut|Bräutigam|leer), partner (Name), rsvp (Zusage|Absage|Nicht festgelegt), standesamt (true = auch beim Standesamt eingeladen), kinderVon (Name eines Elternteils, nur bei Kindern).
-3. "budget": id, posten, kategorie, kosten (Euro, ganze Zahl), bezahlt (Euro, ganze Zahl). Budget-Grenze gesamt: ${db.budget.limit || 0} €.
+3. "budget": id, posten, kategorie, kosten (geplanter Betrag in Euro), bezahlt (tatsächlich bezahlter Betrag in Euro), abgeschlossen (true = fertig, es kommt nichts mehr dazu). Ganze Zahlen. Budget-Grenze gesamt: ${db.budget.limit || 0} €. Für Summen zählt bei abgeschlossenen Posten "bezahlt", bei offenen "kosten".
 
 Setze die Nachricht in Änderungen um. Regeln:
 - Ordne Aussagen bestehenden Einträgen zu, statt Dubletten anzulegen. Namen von Gästen dürfen ungenau geschrieben sein (z. B. nur Vorname).
 - Relative Angaben wie „nächsten Freitag“ rechnest du in ein konkretes Datum um. Ein Datum ohne Jahr ist das nächste in der Zukunft.
 - Bei "neu" verwende eine vorhandene Kategorie bzw. einen vorhandenen Bereich, wenn einer passt.
 - Ändere nur, was die Nachricht verlangt. Notizen ergänzt du, statt sie zu überschreiben.
-- „Ist bezahlt“ heißt bezahlt = kosten. Beträge immer als ganze Euro.
+- „Ist bezahlt“ oder „hat X Euro gekostet“ heißt: abgeschlossen = true und bezahlt = der genannte Betrag; ohne Betrag bezahlt = kosten. Den geplanten Betrag "kosten" dabei nicht ändern. Eine Anzahlung ändert nur "bezahlt". Beträge immer als ganze Euro.
 - Löschen nur, wenn ausdrücklich verlangt.
 - Ist die Nachricht nur eine Frage, beantworte sie anhand der Listen und gib keine Änderungen zurück. Rechne Summen selbst nach.
 - Ist unklar, welcher Eintrag gemeint ist, frag nach und ändere nichts.
@@ -1027,7 +1058,7 @@ gaeste:
 ${JSON.stringify(db.gaeste.gaeste.map((g) => pick(g, ['id', 'name', 'familie', 'seite', 'partner', 'rsvp', 'standesamt', 'kinderVon'])))}
 
 budget:
-${JSON.stringify(db.budget.posten.map((p) => pick(p, ['id', 'posten', 'kategorie', 'kosten', 'bezahlt'])))}`;
+${JSON.stringify(db.budget.posten.map((p) => pick(p, ['id', 'posten', 'kategorie', 'kosten', 'bezahlt', 'abgeschlossen'])))}`;
 }
 
 async function askGemini(text) {
@@ -1082,8 +1113,9 @@ function describe(listKey, op, before, f) {
   if (f.status) p.push(f.status === 'erledigt' ? 'erledigt' : 'wieder offen');
   if (f.rsvp) p.push(f.rsvp === 'Nicht festgelegt' ? 'Rückmeldung offen' : f.rsvp);
   if ('datum' in f) p.push(f.datum ? 'Datum ' + fmtDate(f.datum) : 'Datum entfernt');
-  if ('kosten' in f) p.push('Kosten ' + eur(f.kosten));
+  if ('kosten' in f) p.push('geplant ' + eur(f.kosten));
   if ('bezahlt' in f) p.push('bezahlt ' + eur(f.bezahlt));
+  if ('abgeschlossen' in f) p.push(f.abgeschlossen ? 'abgeschlossen' : 'wieder offen');
   if (f.verantwortlich) p.push(f.verantwortlich);
   if ('standesamt' in f) p.push(f.standesamt ? 'auch Standesamt' : 'nicht beim Standesamt');
   if (f.seite) p.push(f.seite + '-Seite');
