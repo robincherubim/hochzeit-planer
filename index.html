@@ -461,8 +461,8 @@ dialog.sheet::backdrop { background: rgba(20,12,8,.42); animation: fadebg .2s; }
     <div class="field"><label for="bPosten">Posten</label><input id="bPosten" required autocomplete="off"></div>
     <div class="field"><label for="bKat">Kategorie</label><input id="bKat" list="dlBudgetKat" autocomplete="off" placeholder="z. B. Braut"></div>
     <div class="row2">
-      <div class="field"><label for="bKosten">Geplant (€)</label><input id="bKosten" type="number" inputmode="decimal" min="0" step="1"></div>
-      <div class="field"><label for="bBezahlt">Tatsächlich bezahlt (€)</label><input id="bBezahlt" type="number" inputmode="decimal" min="0" step="1"></div>
+      <div class="field"><label for="bKosten">Geplant (€)</label><input id="bKosten" type="text" inputmode="decimal" autocomplete="off" placeholder="0,00"></div>
+      <div class="field"><label for="bBezahlt">Tatsächlich bezahlt (€)</label><input id="bBezahlt" type="text" inputmode="decimal" autocomplete="off" placeholder="0,00"></div>
     </div>
     <label class="switch">Abgeschlossen <input type="checkbox" id="bDone"></label>
     <p class="hint" id="bDiff"></p>
@@ -550,14 +550,18 @@ function b64decode(b64) {
   return new TextDecoder().decode(bytes);
 }
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-const eur = (n) => new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(n || 0);
+// Amounts in euro with up to two decimals; cents are only shown when there are any.
+const round2 = (n) => Math.round((Number(n) || 0) * 100) / 100;
+const eur = (n) => { const v = round2(n); return new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR', minimumFractionDigits: Number.isInteger(v) ? 0 : 2, maximumFractionDigits: 2 }).format(v); };
+const toInput = (v) => (v === '' || v == null ? '' : String(round2(v)).replace('.', ','));
 const today = () => { const d = new Date(); d.setHours(0, 0, 0, 0); return d; };
 const isoToday = () => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; };
 const fmtDate = (iso) => { if (!iso) return ''; const [y, m, d] = iso.split('-'); return `${d}.${m}.${y}`; };
 const validIso = (s) => typeof s === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(s);
 const daysUntil = (iso) => Math.round((new Date(iso + 'T00:00') - today()) / 864e5);
 const initials = (name) => String(name || '?').trim().split(/\s+/).map((p) => p[0]).slice(0, 2).join('').toUpperCase();
-const money = (v) => Math.max(0, Math.round(Number(String(v ?? '').replace(',', '.')) || 0));
+// Accepts "1.234,50", "1234,5", "12.50" or numbers; returns euro rounded to cents.
+const money = (v) => { if (typeof v === 'number') return Math.max(0, round2(v)); const t = String(v ?? '').replace(/[\s€]/g, '').replace(/\.(?=\d{3}(\D|$))/g, '').replace(',', '.'); return Math.max(0, round2(parseFloat(t))); };
 function nextId(list, prefix) {
   let max = 0; for (const x of list) { const m = new RegExp('^' + prefix + '(\\d+)$').exec(x.id || ''); if (m) max = Math.max(max, +m[1]); }
   return prefix + String(max + 1).padStart(prefix === 't' || prefix === 'b' ? 2 : 3, '0');
@@ -934,7 +938,7 @@ function openPosten(p) {
   if (!p && p !== null) return;
   editPosten = p ? p.id : null;
   $('budgetTitle').textContent = p ? 'Posten' : 'Neuer Posten';
-  $('bPosten').value = p?.posten || ''; $('bKat').value = p?.kategorie || ''; $('bKosten').value = p ? p.kosten : ''; $('bBezahlt').value = p ? p.bezahlt : '';
+  $('bPosten').value = p?.posten || ''; $('bKat').value = p?.kategorie || ''; $('bKosten').value = p ? toInput(p.kosten) : ''; $('bBezahlt').value = p ? toInput(p.bezahlt) : '';
   $('bDone').checked = !!p?.abgeschlossen; updateBudgetDiff();
   $('bDelete').hidden = !p; $('bFullPaid').hidden = !p;
   if (p) $('bFullPaid').textContent = p.abgeschlossen ? 'Wieder öffnen' : 'Posten abschließen';
@@ -1029,14 +1033,14 @@ Heute ist ${weekday}, ${fmtDate(isoToday())} (Zeitzone Europe/Berlin). Wer schre
 Es gibt drei Listen:
 1. "aufgaben": id, aufgabe, bereich, datum (JJJJ-MM-TT oder leer), notiz, status (offen|erledigt), verantwortlich (Robin|Corinna|Beide|Nicht zugewiesen). Aufgaben fürs Standesamt haben bereich "Standesamt".
 2. "gaeste": id, name, familie (Kategorie, z. B. Freunde, Verwandte, Elternteil, Trauzeugen), seite (Braut|Bräutigam|leer), partner (Name), rsvp (Zusage|Absage|Nicht festgelegt), standesamt (true = auch beim Standesamt eingeladen), kinderVon (Name eines Elternteils, nur bei Kindern).
-3. "budget": id, posten, kategorie, kosten (geplanter Betrag in Euro), bezahlt (tatsächlich bezahlter Betrag in Euro), abgeschlossen (true = fertig, es kommt nichts mehr dazu). Ganze Zahlen. Budget-Grenze gesamt: ${db.budget.limit || 0} €. Für Summen zählt bei abgeschlossenen Posten "bezahlt", bei offenen "kosten".
+3. "budget": id, posten, kategorie, kosten (geplanter Betrag in Euro), bezahlt (tatsächlich bezahlter Betrag in Euro), abgeschlossen (true = fertig, es kommt nichts mehr dazu). Beträge als Zahl mit Punkt und bis zu zwei Nachkommastellen, z. B. 1234.5. Budget-Grenze gesamt: ${db.budget.limit || 0} €. Für Summen zählt bei abgeschlossenen Posten "bezahlt", bei offenen "kosten".
 
 Setze die Nachricht in Änderungen um. Regeln:
 - Ordne Aussagen bestehenden Einträgen zu, statt Dubletten anzulegen. Namen von Gästen dürfen ungenau geschrieben sein (z. B. nur Vorname).
 - Relative Angaben wie „nächsten Freitag“ rechnest du in ein konkretes Datum um. Ein Datum ohne Jahr ist das nächste in der Zukunft.
 - Bei "neu" verwende eine vorhandene Kategorie bzw. einen vorhandenen Bereich, wenn einer passt.
 - Ändere nur, was die Nachricht verlangt. Notizen ergänzt du, statt sie zu überschreiben.
-- „Ist bezahlt“ oder „hat X Euro gekostet“ heißt: abgeschlossen = true und bezahlt = der genannte Betrag; ohne Betrag bezahlt = kosten. Den geplanten Betrag "kosten" dabei nicht ändern. Eine Anzahlung ändert nur "bezahlt". Beträge immer als ganze Euro.
+- „Ist bezahlt“ oder „hat X Euro gekostet“ heißt: abgeschlossen = true und bezahlt = der genannte Betrag; ohne Betrag bezahlt = kosten. Den geplanten Betrag "kosten" dabei nicht ändern. Eine Anzahlung ändert nur "bezahlt". Cent-Beträge genau übernehmen.
 - Löschen nur, wenn ausdrücklich verlangt.
 - Ist die Nachricht nur eine Frage, beantworte sie anhand der Listen und gib keine Änderungen zurück. Rechne Summen selbst nach.
 - Ist unklar, welcher Eintrag gemeint ist, frag nach und ändere nichts.
