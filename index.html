@@ -2,211 +2,316 @@
 <html lang="de">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
 <title>Hochzeitsplaner</title>
 <meta name="robots" content="noindex, nofollow">
-<meta name="theme-color" content="#8a5a44">
+<meta name="theme-color" content="#faf6f1" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#1b1715" media="(prefers-color-scheme: dark)">
 <meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Hochzeit">
+<meta name="format-detection" content="telephone=no">
 <link rel="manifest" href="manifest.json">
-<link rel="icon" href="icon.svg" type="image/svg+xml">
-<link rel="apple-touch-icon" href="icon.svg">
+<link rel="icon" href="icon-192.png" type="image/png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
 <style>
 :root {
-  --bg: #faf6f1; --surface: #ffffff; --surface-2: #f3ece4; --text: #2b211c; --muted: #7a6a60;
-  --line: #e6dbd0; --accent: #8a5a44; --accent-ink: #ffffff; --accent-soft: #f1e3da;
-  --ok: #3f7a52; --ok-soft: #e3f0e6; --warn: #a3641c; --warn-soft: #f8ecd9; --danger: #a33a3a;
-  --radius: 14px; --shadow: 0 1px 2px rgba(60,40,30,.06), 0 4px 16px rgba(60,40,30,.06);
+  --bg: #faf6f1; --surface: #ffffff; --surface-2: #f3ece4; --text: #2b211c; --muted: #85756a;
+  --line: #ece2d8; --accent: #8a5a44; --accent-ink: #ffffff; --accent-soft: #f3e6dd;
+  --ok: #3f7a52; --ok-soft: #e3f0e6; --warn: #a3641c; --warn-soft: #f8ecd9; --danger: #b03a3a; --danger-soft: #f8e1e1;
+  --radius: 16px; --shadow: 0 1px 2px rgba(60,40,30,.05), 0 6px 20px rgba(60,40,30,.06);
+  --bar-bg: rgba(250,246,241,.86);
+  --safe-t: env(safe-area-inset-top, 0px); --safe-b: env(safe-area-inset-bottom, 0px);
+  --tabbar-h: 58px;
+  color-scheme: light dark;
 }
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #1b1715; --surface: #241f1c; --surface-2: #2e2723; --text: #f1e9e3; --muted: #b3a398;
-    --line: #3a322d; --accent: #d39c80; --accent-ink: #1b1715; --accent-soft: #3a2b24;
-    --ok: #7cc392; --ok-soft: #22332a; --warn: #e2a85f; --warn-soft: #3a2e1e; --danger: #e07a7a;
-    --shadow: none;
+    --bg: #1b1715; --surface: #25201d; --surface-2: #302925; --text: #f3ebe5; --muted: #b4a498;
+    --line: #3a322d; --accent: #d9a186; --accent-ink: #1b1715; --accent-soft: #3b2c25;
+    --ok: #82c798; --ok-soft: #22332a; --warn: #e5ab62; --warn-soft: #3a2e1e; --danger: #ec8a8a; --danger-soft: #3d2424;
+    --shadow: none; --bar-bg: rgba(27,23,21,.86);
   }
 }
-* { box-sizing: border-box; }
-html, body { margin: 0; background: var(--bg); color: var(--text); }
-body { font: 15px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; padding: env(safe-area-inset-top) 0 env(safe-area-inset-bottom); }
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html, body { margin: 0; height: 100%; background: var(--bg); color: var(--text); }
+body { font: 16px/1.4 -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, sans-serif; overscroll-behavior-y: none; }
 button, input, select, textarea { font: inherit; color: inherit; }
-.wrap { max-width: 880px; margin: 0 auto; padding: 16px; }
-header.top { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
-header.top h1 { font-family: Georgia, "Times New Roman", serif; font-weight: 400; font-size: 26px; margin: 0; letter-spacing: .2px; }
-header.top .sub { color: var(--muted); font-size: 13px; }
-.iconbtn { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 8px 12px; cursor: pointer; }
-.iconbtn:hover { border-color: var(--accent); }
-.stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 14px; }
-.stat { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 10px 12px; box-shadow: var(--shadow); }
-.stat b { display: block; font-size: 22px; font-variant-numeric: tabular-nums; }
-.stat span { color: var(--muted); font-size: 12px; }
-.bar { height: 6px; background: var(--surface-2); border-radius: 99px; overflow: hidden; margin-top: 6px; }
-.bar i { display: block; height: 100%; background: var(--accent); }
-.card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); }
-.chat { padding: 12px; margin-bottom: 16px; }
-.chatlog { max-height: 300px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; margin-bottom: 10px; }
-.chatlog:empty { display: none; }
-.msg { padding: 8px 12px; border-radius: 12px; max-width: 90%; white-space: pre-wrap; word-wrap: break-word; }
-.msg.me { align-self: flex-end; background: var(--accent); color: var(--accent-ink); }
-.msg.bot { align-self: flex-start; background: var(--surface-2); }
-.msg.err { align-self: flex-start; background: var(--warn-soft); color: var(--warn); }
-.msg ul { margin: 6px 0 0; padding-left: 18px; }
-.msg .undo { margin-top: 6px; background: transparent; border: 1px solid currentColor; border-radius: 8px; padding: 2px 10px; cursor: pointer; font-size: 13px; }
-.chatform { display: flex; gap: 8px; align-items: flex-end; }
-.chatform textarea { flex: 1; resize: none; min-height: 44px; max-height: 140px; padding: 10px 12px; border-radius: 12px; border: 1px solid var(--line); background: var(--bg); }
-.chatform textarea:focus, .field input:focus, .field select:focus, .field textarea:focus, .filters input:focus, .filters select:focus { outline: 2px solid var(--accent); outline-offset: -1px; }
-.primary { background: var(--accent); color: var(--accent-ink); border: 0; border-radius: 12px; padding: 10px 16px; cursor: pointer; font-weight: 600; }
-.primary:disabled { opacity: .5; cursor: default; }
-.ghost { background: transparent; border: 1px solid var(--line); border-radius: 12px; padding: 10px 14px; cursor: pointer; }
-.hint { color: var(--muted); font-size: 12px; margin-top: 6px; }
-.filters { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; align-items: center; }
-.filters input, .filters select { padding: 8px 10px; border-radius: 10px; border: 1px solid var(--line); background: var(--surface); }
-.filters input { flex: 1 1 180px; min-width: 0; }
-.group h2 { font-size: 13px; text-transform: uppercase; letter-spacing: .6px; color: var(--muted); margin: 18px 4px 6px; font-weight: 600; }
-.todo { display: flex; gap: 10px; align-items: flex-start; padding: 10px 12px; border-top: 1px solid var(--line); cursor: pointer; }
-.todo:first-child { border-top: 0; }
-.todo:hover { background: var(--surface-2); }
-.todo input[type=checkbox] { width: 20px; height: 20px; margin: 1px 0 0; accent-color: var(--accent); flex: none; cursor: pointer; }
+button { cursor: pointer; }
+[hidden] { display: none !important; }
+
+/* ---------- app bar ---------- */
+.appbar { position: sticky; top: 0; z-index: 20; padding: calc(var(--safe-t) + 10px) 16px 10px; background: var(--bar-bg); backdrop-filter: saturate(1.6) blur(18px); -webkit-backdrop-filter: saturate(1.6) blur(18px); border-bottom: 1px solid transparent; transition: border-color .2s; }
+.appbar.scrolled { border-bottom-color: var(--line); }
+.appbar-inner { max-width: 680px; margin: 0 auto; display: flex; align-items: center; gap: 12px; }
+.appbar h1 { flex: 1; margin: 0; font: 400 24px/1.15 Georgia, "Times New Roman", serif; letter-spacing: .2px; }
+.appbar .sub { display: block; font: 500 12px/1.3 -apple-system, system-ui, sans-serif; color: var(--muted); letter-spacing: .2px; margin-top: 2px; }
+.iconbtn { width: 40px; height: 40px; display: grid; place-items: center; border-radius: 12px; border: 0; background: var(--surface-2); color: var(--text); flex: none; }
+.iconbtn svg { width: 22px; height: 22px; }
+.sync { width: 8px; height: 8px; border-radius: 50%; background: var(--ok); flex: none; transition: background .2s; }
+.sync.busy { background: var(--warn); animation: pulse 1s infinite; }
+.sync.err { background: var(--danger); }
+@keyframes pulse { 50% { opacity: .35; } }
+
+/* ---------- views ---------- */
+main { max-width: 680px; margin: 0 auto; padding: 4px 16px calc(var(--tabbar-h) + var(--safe-b) + 24px); }
+.view { animation: fade .18s ease-out; }
+@keyframes fade { from { opacity: 0; transform: translateY(4px); } }
+
+.hero { background: var(--surface); border-radius: var(--radius); box-shadow: var(--shadow); padding: 14px 16px; display: flex; align-items: center; gap: 16px; margin: 8px 0 14px; }
+.ring { width: 64px; height: 64px; flex: none; position: relative; }
+.ring svg { width: 64px; height: 64px; transform: rotate(-90deg); }
+.ring circle { fill: none; stroke-width: 7; }
+.ring .bg { stroke: var(--surface-2); }
+.ring .fg { stroke: var(--accent); stroke-linecap: round; transition: stroke-dashoffset .6s cubic-bezier(.2,.8,.2,1); }
+.ring b { position: absolute; inset: 0; display: grid; place-items: center; font-size: 15px; font-variant-numeric: tabular-nums; }
+.hero-text { flex: 1; min-width: 0; }
+.hero-text .big { font-size: 22px; font-weight: 650; font-variant-numeric: tabular-nums; }
+.hero-text .small { color: var(--muted); font-size: 13px; }
+
+.seg { display: grid; grid-template-columns: repeat(3, 1fr); background: var(--surface-2); border-radius: 12px; padding: 3px; margin-bottom: 10px; }
+.seg button { border: 0; background: transparent; padding: 8px 0; border-radius: 9px; font-size: 14px; font-weight: 550; color: var(--muted); transition: background .15s, color .15s; }
+.seg button[aria-pressed="true"] { background: var(--surface); color: var(--text); box-shadow: 0 1px 3px rgba(0,0,0,.1); }
+.chips { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; margin: 0 -16px 10px; padding: 0 16px; }
+.chips::-webkit-scrollbar { display: none; }
+.chip { flex: none; border: 1px solid var(--line); background: var(--surface); border-radius: 99px; padding: 7px 14px; font-size: 14px; white-space: nowrap; }
+.chip[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.searchrow { display: flex; gap: 8px; margin-bottom: 6px; }
+.search { flex: 1; min-width: 0; border: 0; background: var(--surface-2); border-radius: 12px; padding: 10px 12px; font-size: 16px; }
+.search:focus, .field input:focus, .field select:focus, .field textarea:focus, .composer textarea:focus { outline: 2px solid var(--accent); outline-offset: -2px; }
+.sortbtn { border: 0; background: var(--surface-2); border-radius: 12px; padding: 0 12px; font-size: 14px; color: var(--muted); white-space: nowrap; }
+
+.group h2 { font-size: 13px; text-transform: uppercase; letter-spacing: .6px; color: var(--muted); margin: 20px 6px 6px; font-weight: 600; }
+.card { background: var(--surface); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; }
+.todo { display: flex; gap: 12px; align-items: flex-start; padding: 12px 14px; min-height: 56px; position: relative; }
+.todo + .todo::before { content: ""; position: absolute; top: 0; left: 50px; right: 0; border-top: 1px solid var(--line); }
+.todo:active { background: var(--surface-2); }
+.check { width: 26px; height: 26px; flex: none; border-radius: 50%; border: 2px solid var(--line); background: transparent; display: grid; place-items: center; margin-top: 1px; padding: 0; transition: background .2s, border-color .2s, transform .15s; }
+.check svg { width: 14px; height: 14px; stroke: var(--accent-ink); stroke-width: 3; fill: none; opacity: 0; transform: scale(.4); transition: opacity .15s, transform .2s cubic-bezier(.3,1.6,.5,1); }
+.todo.done .check { background: var(--accent); border-color: var(--accent); }
+.todo.done .check svg { opacity: 1; transform: none; }
+.check:active { transform: scale(.88); }
 .todo .main { flex: 1; min-width: 0; }
-.todo .title { font-weight: 500; }
-.todo.done .title { text-decoration: line-through; color: var(--muted); }
-.todo .meta { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 3px; font-size: 12px; color: var(--muted); }
-.todo .note { font-size: 13px; color: var(--muted); margin-top: 2px; }
-.pill { border-radius: 99px; padding: 1px 8px; background: var(--surface-2); }
+.todo .title { font-weight: 500; line-height: 1.3; }
+.todo.done .title { color: var(--muted); text-decoration: line-through; text-decoration-color: color-mix(in srgb, var(--muted) 60%, transparent); }
+.todo .note { font-size: 14px; color: var(--muted); margin-top: 2px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+.todo .meta { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; font-size: 12px; }
+.pill { border-radius: 99px; padding: 2px 9px; background: var(--surface-2); color: var(--muted); font-weight: 500; }
 .pill.due { background: var(--warn-soft); color: var(--warn); }
-.pill.late { background: var(--warn-soft); color: var(--danger); font-weight: 600; }
+.pill.late { background: var(--danger-soft); color: var(--danger); }
 .pill.flash { background: var(--ok-soft); color: var(--ok); }
-.empty { padding: 24px; text-align: center; color: var(--muted); }
-.toolbar { display: flex; justify-content: space-between; align-items: center; margin: 4px 0 8px; }
-.status { font-size: 12px; color: var(--muted); }
-dialog { border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); color: var(--text); padding: 0; width: min(520px, calc(100vw - 32px)); }
-dialog::backdrop { background: rgba(20,12,8,.45); }
-dialog form { padding: 18px; }
-dialog h3 { margin: 0 0 12px; font-family: Georgia, serif; font-weight: 400; font-size: 20px; }
-.field { display: flex; flex-direction: column; gap: 4px; margin-bottom: 10px; }
-.field label { font-size: 12px; color: var(--muted); }
-.field input, .field select, .field textarea { padding: 9px 10px; border-radius: 10px; border: 1px solid var(--line); background: var(--bg); width: 100%; }
+.empty { padding: 40px 20px; text-align: center; color: var(--muted); }
+
+.fab { position: fixed; right: max(16px, calc(50% - 324px)); bottom: calc(var(--tabbar-h) + var(--safe-b) + 16px); width: 56px; height: 56px; border-radius: 18px; border: 0; background: var(--accent); color: var(--accent-ink); box-shadow: 0 8px 24px rgba(138,90,68,.35); display: grid; place-items: center; z-index: 15; transition: transform .15s; }
+.fab:active { transform: scale(.92); }
+.fab svg { width: 26px; height: 26px; }
+
+/* ---------- chat ---------- */
+.chatview { display: flex; flex-direction: column; min-height: calc(100dvh - 120px - var(--tabbar-h) - var(--safe-b) - var(--safe-t)); }
+.msgs { flex: 1; display: flex; flex-direction: column; gap: 8px; padding: 8px 0 12px; }
+.msg { padding: 10px 14px; border-radius: 20px; max-width: 86%; white-space: pre-wrap; overflow-wrap: anywhere; animation: pop .2s ease-out; }
+@keyframes pop { from { opacity: 0; transform: translateY(6px) scale(.98); } }
+.msg.me { align-self: flex-end; background: var(--accent); color: var(--accent-ink); border-bottom-right-radius: 6px; }
+.msg.bot { align-self: flex-start; background: var(--surface); box-shadow: var(--shadow); border-bottom-left-radius: 6px; }
+.msg.err { align-self: flex-start; background: var(--warn-soft); color: var(--warn); }
+.msg ul { margin: 8px 0 0; padding-left: 18px; }
+.msg .undo { margin-top: 8px; background: transparent; border: 1px solid var(--line); border-radius: 99px; padding: 4px 12px; font-size: 13px; color: var(--accent); }
+.msg .undone { margin-top: 6px; font-size: 13px; color: var(--muted); }
+.typing { align-self: flex-start; display: flex; gap: 4px; padding: 14px 16px; background: var(--surface); border-radius: 20px; box-shadow: var(--shadow); }
+.typing i { width: 7px; height: 7px; border-radius: 50%; background: var(--muted); animation: blink 1.2s infinite; }
+.typing i:nth-child(2) { animation-delay: .2s; } .typing i:nth-child(3) { animation-delay: .4s; }
+@keyframes blink { 0%, 60%, 100% { opacity: .25; } 30% { opacity: 1; } }
+.welcome { text-align: center; color: var(--muted); padding: 24px 8px 8px; }
+.welcome h2 { font: 400 22px/1.2 Georgia, serif; color: var(--text); margin: 0 0 6px; }
+.suggest { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-top: 14px; }
+.suggest button { border: 1px solid var(--line); background: var(--surface); border-radius: 99px; padding: 8px 14px; font-size: 14px; }
+.composer { position: sticky; bottom: calc(var(--tabbar-h) + var(--safe-b) + 8px); display: flex; gap: 8px; align-items: flex-end; background: var(--surface); border-radius: 24px; padding: 6px 6px 6px 14px; box-shadow: 0 4px 24px rgba(60,40,30,.12); border: 1px solid var(--line); }
+.composer textarea { flex: 1; border: 0; background: transparent; resize: none; padding: 8px 0; max-height: 140px; font-size: 16px; line-height: 1.35; outline: none !important; }
+.send { width: 38px; height: 38px; border-radius: 50%; border: 0; background: var(--accent); color: var(--accent-ink); display: grid; place-items: center; flex: none; transition: opacity .15s, transform .15s; }
+.send:disabled { opacity: .35; }
+.send svg { width: 18px; height: 18px; }
+
+/* ---------- tab bar ---------- */
+.tabbar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 20; display: flex; justify-content: center; background: var(--bar-bg); backdrop-filter: saturate(1.6) blur(18px); -webkit-backdrop-filter: saturate(1.6) blur(18px); border-top: 1px solid var(--line); padding-bottom: var(--safe-b); }
+.tabbar-inner { display: flex; width: 100%; max-width: 680px; }
+.tab { flex: 1; height: var(--tabbar-h); border: 0; background: transparent; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; font-size: 11px; font-weight: 550; color: var(--muted); position: relative; }
+.tab svg { width: 25px; height: 25px; }
+.tab[aria-selected="true"] { color: var(--accent); }
+.badge { position: absolute; top: 6px; left: calc(50% + 6px); min-width: 18px; height: 18px; border-radius: 9px; background: var(--accent); color: var(--accent-ink); font-size: 11px; display: grid; place-items: center; padding: 0 5px; }
+
+/* ---------- sheets ---------- */
+dialog.sheet { border: 0; padding: 0; margin: auto auto 0; width: 100%; max-width: 560px; max-height: 92dvh; border-radius: 22px 22px 0 0; background: var(--surface); color: var(--text); overflow: auto; overscroll-behavior: contain; }
+dialog.sheet[open] { animation: up .28s cubic-bezier(.2,.9,.25,1); }
+@keyframes up { from { transform: translateY(100%); } }
+dialog.sheet::backdrop { background: rgba(20,12,8,.42); animation: fadebg .2s; }
+@keyframes fadebg { from { opacity: 0; } }
+@media (min-width: 700px) { dialog.sheet { margin: auto; border-radius: 22px; } }
+.sheet form { padding: 8px 18px calc(18px + var(--safe-b)); }
+.grabber { width: 38px; height: 5px; border-radius: 3px; background: var(--line); margin: 0 auto 10px; }
+.sheet-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+.sheet-head h3 { margin: 0; font: 400 21px/1.2 Georgia, serif; }
+.textbtn { border: 0; background: transparent; color: var(--accent); font-weight: 600; padding: 8px 4px; font-size: 16px; }
+.field { display: flex; flex-direction: column; gap: 5px; margin-bottom: 12px; }
+.field label { font-size: 13px; color: var(--muted); font-weight: 500; }
+.field input, .field select, .field textarea { padding: 11px 12px; border-radius: 12px; border: 1px solid var(--line); background: var(--bg); width: 100%; font-size: 16px; min-height: 46px; }
+.field textarea { resize: vertical; }
 .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-.actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 14px; flex-wrap: wrap; }
-.actions .danger { margin-right: auto; color: var(--danger); border-color: var(--danger); }
-.setup p { margin: 0 0 10px; color: var(--muted); font-size: 13px; }
-.qrbox { background: #fff; padding: 12px; border-radius: 12px; display: flex; justify-content: center; margin: 8px 0; }
+.optrow { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+.optrow button { border: 1px solid var(--line); background: var(--bg); border-radius: 12px; padding: 10px 0; font-size: 14px; }
+.optrow button[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.primary { width: 100%; border: 0; border-radius: 14px; background: var(--accent); color: var(--accent-ink); font-weight: 650; padding: 14px; font-size: 16px; }
+.secondary { width: 100%; border: 1px solid var(--line); border-radius: 14px; background: transparent; padding: 13px; font-size: 16px; }
+.danger { width: 100%; border: 0; border-radius: 14px; background: var(--danger-soft); color: var(--danger); padding: 13px; font-size: 16px; font-weight: 600; }
+.stack { display: grid; gap: 10px; margin-top: 14px; }
+.hint { color: var(--muted); font-size: 13px; margin: 0 0 12px; }
+.qrbox { background: #fff; padding: 14px; border-radius: 16px; display: flex; justify-content: center; margin: 8px 0; }
 .qrbox svg { width: 100%; max-width: 300px; height: auto; display: block; }
-.banner { padding: 12px 14px; margin-bottom: 14px; background: var(--ok-soft); color: var(--ok); border-color: transparent; }
-@media (max-width: 520px) {
-  header.top h1 { font-size: 22px; }
-  .row2 { grid-template-columns: 1fr; }
-  .stat b { font-size: 19px; }
-  .iconbtn .lbl { display: none; }
-  .iconbtn { font-size: 18px; padding: 6px 10px; flex: none; }
-}
+.modelrow { display: flex; gap: 8px; }
+.modelrow input { flex: 1; }
+.modelrow button { border: 1px solid var(--line); background: var(--bg); border-radius: 12px; padding: 0 14px; }
+
+.banner { background: var(--ok-soft); color: var(--ok); border-radius: var(--radius); padding: 12px 14px; margin: 8px 0; font-size: 15px; }
+.toast { position: fixed; left: 50%; bottom: calc(var(--tabbar-h) + var(--safe-b) + 84px); transform: translate(-50%, 20px); opacity: 0; background: var(--text); color: var(--bg); padding: 10px 16px; border-radius: 14px; font-size: 14px; z-index: 50; transition: opacity .2s, transform .2s; max-width: calc(100% - 32px); text-align: center; pointer-events: none; }
+.toast.show { opacity: 1; transform: translate(-50%, 0); pointer-events: auto; }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
 </style>
 </head>
 <body>
-<div class="wrap">
-  <header class="top">
-    <div>
-      <h1>Robin &amp; Corinna</h1>
-      <div class="sub">26.06.2027 · The White House, Mahlberg</div>
-    </div>
-    <button class="iconbtn" id="btnSettings" title="Einstellungen" aria-label="Einstellungen">⚙︎<span class="lbl"> Einstellungen</span></button>
-  </header>
-
-  <div class="card banner" id="setupBanner" hidden>Eingerichtet. Tippe jetzt in Safari auf Teilen und dann auf „Zum Home-Bildschirm“. Danach die App vom Home-Bildschirm aus öffnen.</div>
-
-  <div class="stats">
-    <div class="stat"><b id="statDays">–</b><span>Tage bis zur Hochzeit</span></div>
-    <div class="stat"><b id="statOpen">–</b><span>offene Aufgaben</span></div>
-    <div class="stat"><b id="statPct">–</b><span>erledigt</span><div class="bar"><i id="statBar" style="width:0"></i></div></div>
+<header class="appbar" id="appbar">
+  <div class="appbar-inner">
+    <h1>Robin &amp; Corinna<span class="sub" id="subtitle">26.06.2027 · The White House, Mahlberg</span></h1>
+    <span class="sync" id="sync" title="Synchronisation"></span>
+    <button class="iconbtn" id="btnSettings" aria-label="Einstellungen">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
+    </button>
   </div>
+</header>
 
-  <section class="card chat">
-    <div class="chatlog" id="chatlog" aria-live="polite"></div>
-    <form class="chatform" id="chatform">
-      <textarea id="chatinput" rows="1" placeholder="z. B. „DJ ist gebucht, Anzahlung bis 15.01. macht Corinna“"></textarea>
-      <button class="primary" id="chatsend" type="submit">Senden</button>
-    </form>
-    <div class="hint" id="chathint">Schreib einfach, was sich geändert hat. Änderungen werden sofort gespeichert und lassen sich rückgängig machen.</div>
+<main>
+  <div class="banner" id="setupBanner" hidden>Eingerichtet. Tippe jetzt in Safari auf Teilen und dann auf „Zum Home-Bildschirm“. Danach die App über das neue Symbol öffnen.</div>
+
+  <section class="view" id="viewList">
+    <div class="hero">
+      <div class="ring" aria-hidden="true">
+        <svg viewBox="0 0 64 64"><circle class="bg" cx="32" cy="32" r="27"/><circle class="fg" id="ringFg" cx="32" cy="32" r="27" stroke-dasharray="169.6" stroke-dashoffset="169.6"/></svg>
+        <b id="ringPct">0 %</b>
+      </div>
+      <div class="hero-text">
+        <div class="big" id="heroDays">–</div>
+        <div class="small" id="heroOpen">Lade Aufgaben …</div>
+      </div>
+    </div>
+
+    <div class="seg" role="group" aria-label="Status">
+      <button data-status="offen" aria-pressed="true">Offen</button>
+      <button data-status="alle" aria-pressed="false">Alle</button>
+      <button data-status="erledigt" aria-pressed="false">Erledigt</button>
+    </div>
+    <div class="chips" id="personChips" role="group" aria-label="Person">
+      <button class="chip" data-wer="" aria-pressed="true">Alle</button>
+      <button class="chip" data-wer="Robin" aria-pressed="false">Robin</button>
+      <button class="chip" data-wer="Corinna" aria-pressed="false">Corinna</button>
+      <button class="chip" data-wer="Beide" aria-pressed="false">Beide</button>
+      <button class="chip" data-wer="Nicht zugewiesen" aria-pressed="false">Offen zugewiesen</button>
+    </div>
+    <div class="searchrow">
+      <input class="search" id="fSearch" type="search" placeholder="Suchen" enterkeyhint="search" autocomplete="off">
+      <button class="sortbtn" id="btnGroup">Nach Bereich</button>
+    </div>
+    <div id="list"></div>
   </section>
 
-  <div class="toolbar">
-    <span class="status" id="syncStatus"></span>
-    <button class="ghost" id="btnAdd">+ Aufgabe</button>
+  <section class="view chatview" id="viewChat" hidden>
+    <div class="msgs" id="msgs" aria-live="polite"></div>
+    <form class="composer" id="composer">
+      <textarea id="chatinput" rows="1" placeholder="Was hat sich getan?" enterkeyhint="send"></textarea>
+      <button class="send" id="chatsend" type="submit" aria-label="Senden" disabled>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+      </button>
+    </form>
+  </section>
+</main>
+
+<button class="fab" id="fab" aria-label="Aufgabe hinzufügen">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+</button>
+
+<nav class="tabbar" aria-label="Bereiche">
+  <div class="tabbar-inner" role="tablist">
+    <button class="tab" role="tab" data-view="list" aria-selected="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6h11M9 12h11M9 18h11"/><path d="M3.5 6l1.2 1.2L7 5M3.5 12l1.2 1.2L7 11M3.5 18l1.2 1.2L7 17"/></svg>
+      Aufgaben<span class="badge" id="openBadge" hidden></span>
+    </button>
+    <button class="tab" role="tab" data-view="chat" aria-selected="false">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20.5l1.4-4.9A8 8 0 1 1 21 12z"/></svg>
+      Chat
+    </button>
   </div>
+</nav>
 
-  <div class="filters">
-    <input id="fSearch" type="search" placeholder="Suchen …">
-    <select id="fStatus">
-      <option value="offen">Offen</option>
-      <option value="erledigt">Erledigt</option>
-      <option value="alle">Alle</option>
-    </select>
-    <select id="fWer">
-      <option value="">Alle Personen</option>
-      <option>Robin</option><option>Corinna</option><option>Beide</option><option>Nicht zugewiesen</option>
-    </select>
-    <select id="fGroup">
-      <option value="bereich">Nach Bereich</option>
-      <option value="datum">Nach Datum</option>
-    </select>
-  </div>
-
-  <div id="list"></div>
-</div>
-
-<dialog id="dlgTodo">
-  <form method="dialog" id="todoForm">
-    <h3 id="todoTitle">Aufgabe</h3>
-    <div class="field"><label for="tAufgabe">Aufgabe</label><input id="tAufgabe" required></div>
-    <div class="row2">
-      <div class="field"><label for="tBereich">Bereich</label><input id="tBereich" list="bereiche"></div>
-      <div class="field"><label for="tDatum">Datum</label><input id="tDatum" type="date"></div>
-    </div>
-    <div class="row2">
-      <div class="field"><label for="tWer">Verantwortlich</label>
-        <select id="tWer"><option>Nicht zugewiesen</option><option>Robin</option><option>Corinna</option><option>Beide</option></select></div>
-      <div class="field"><label for="tStatus">Status</label>
-        <select id="tStatus"><option>offen</option><option>erledigt</option></select></div>
-    </div>
-    <div class="field"><label for="tNotiz">Notiz</label><textarea id="tNotiz" rows="3"></textarea></div>
-    <div class="actions">
-      <button type="button" class="ghost danger" id="tDelete">Löschen</button>
-      <button type="button" class="ghost" id="tCancel">Abbrechen</button>
-      <button type="submit" class="primary">Speichern</button>
-    </div>
-  </form>
-</dialog>
+<div class="toast" id="toast" role="status"></div>
 <datalist id="bereiche"></datalist>
 
-<dialog id="dlgSettings">
-  <form method="dialog" id="settingsForm" class="setup">
-    <h3>Einstellungen</h3>
-    <p>Die Schlüssel bleiben nur in diesem Browser gespeichert. Auf jedem Gerät einmal eintragen.</p>
+<dialog class="sheet" id="dlgTodo">
+  <form method="dialog" id="todoForm">
+    <div class="grabber"></div>
+    <div class="sheet-head">
+      <button type="button" class="textbtn" id="tCancel">Abbrechen</button>
+      <h3 id="todoTitle">Aufgabe</h3>
+      <button type="submit" class="textbtn">Fertig</button>
+    </div>
+    <div class="field"><label for="tAufgabe">Aufgabe</label><input id="tAufgabe" required autocomplete="off"></div>
     <div class="row2">
-      <div class="field"><label for="sOwner">GitHub-Benutzername</label><input id="sOwner" autocomplete="off" spellcheck="false"></div>
-      <div class="field"><label for="sRepo">Daten-Repo (privat)</label><input id="sRepo" autocomplete="off" spellcheck="false" placeholder="hochzeit-daten"></div>
+      <div class="field"><label for="tBereich">Bereich</label><input id="tBereich" list="bereiche" autocomplete="off"></div>
+      <div class="field"><label for="tDatum">Datum</label><input id="tDatum" type="date"></div>
     </div>
-    <div class="field"><label for="sToken">GitHub-Token (nur Contents für das Daten-Repo)</label><input id="sToken" type="password" autocomplete="off" spellcheck="false"></div>
-    <div class="field"><label for="sGemini">Gemini-API-Schlüssel</label><input id="sGemini" type="password" autocomplete="off" spellcheck="false"></div>
-    <div class="field"><label for="sModel">Gemini-Modell</label>
-      <div style="display:flex;gap:8px"><input id="sModel" list="modelList" spellcheck="false" style="flex:1"><button type="button" class="ghost" id="sLoadModels">Laden</button></div>
-      <datalist id="modelList"></datalist>
+    <div class="field"><label>Verantwortlich</label>
+      <div class="optrow" id="tWer">
+        <button type="button" data-v="Robin">Robin</button><button type="button" data-v="Corinna">Corinna</button><button type="button" data-v="Beide">Beide</button><button type="button" data-v="Nicht zugewiesen">Offen</button>
+      </div>
     </div>
-    <p id="sInfo"></p>
-    <div class="actions">
-      <button type="button" class="ghost" id="sQr" style="margin-right:auto">Handy verbinden</button>
-      <button type="button" class="ghost" id="sCancel">Schließen</button>
-      <button type="submit" class="primary">Speichern und verbinden</button>
+    <div class="field"><label for="tNotiz">Notiz</label><textarea id="tNotiz" rows="3"></textarea></div>
+    <div class="stack">
+      <button type="button" class="secondary" id="tToggle">Als erledigt markieren</button>
+      <button type="button" class="danger" id="tDelete">Aufgabe löschen</button>
     </div>
   </form>
 </dialog>
 
-<dialog id="dlgQr">
-  <form method="dialog" class="setup">
-    <h3>Handy verbinden</h3>
-    <p>Mit der Kamera des Handys scannen und den Link öffnen. Der Code enthält deine Schlüssel: nicht fotografieren, nicht verschicken.</p>
+<dialog class="sheet" id="dlgSettings">
+  <form method="dialog" id="settingsForm">
+    <div class="grabber"></div>
+    <div class="sheet-head">
+      <button type="button" class="textbtn" id="sCancel">Schließen</button>
+      <h3>Einstellungen</h3>
+      <span style="width:72px"></span>
+    </div>
+    <p class="hint">Die Schlüssel bleiben nur auf diesem Gerät gespeichert.</p>
+    <div class="row2">
+      <div class="field"><label for="sOwner">GitHub-Benutzername</label><input id="sOwner" autocomplete="off" autocapitalize="off" spellcheck="false"></div>
+      <div class="field"><label for="sRepo">Daten-Repo</label><input id="sRepo" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="hochzeit-daten"></div>
+    </div>
+    <div class="field"><label for="sToken">GitHub-Token</label><input id="sToken" type="password" autocomplete="off" spellcheck="false"></div>
+    <div class="field"><label for="sGemini">Gemini-Schlüssel</label><input id="sGemini" type="password" autocomplete="off" spellcheck="false"></div>
+    <div class="field"><label for="sModel">Gemini-Modell</label>
+      <div class="modelrow"><input id="sModel" list="modelList" autocapitalize="off" spellcheck="false" placeholder="automatisch"><button type="button" id="sLoadModels">Laden</button></div>
+      <datalist id="modelList"></datalist>
+    </div>
+    <p class="hint" id="sInfo"></p>
+    <div class="stack">
+      <button type="submit" class="primary">Speichern und verbinden</button>
+      <button type="button" class="secondary" id="sQr">Handy verbinden (QR-Code)</button>
+    </div>
+  </form>
+</dialog>
+
+<dialog class="sheet" id="dlgQr">
+  <form method="dialog">
+    <div class="grabber"></div>
+    <div class="sheet-head"><span style="width:72px"></span><h3>Handy verbinden</h3><button class="textbtn" value="close">Fertig</button></div>
+    <p class="hint">Mit der Kamera des Handys scannen und den Link öffnen. Auf dem iPhone danach in Safari „Zum Home-Bildschirm“ wählen. Der Code enthält deine Schlüssel: nicht fotografieren, nicht verschicken.</p>
     <div class="qrbox" id="qrBox"></div>
-    <div class="actions"><button class="primary" value="close">Fertig</button></div>
   </form>
 </dialog>
 
@@ -229,7 +334,7 @@ let cfg = Object.assign({ owner: '', repo: 'hochzeit-daten', token: '', gemini: 
 if (!cfg.model || cfg.model === 'gemini-2.5-flash') cfg.model = DEFAULT_MODEL;
 const hasGitHub = () => !!(cfg.owner && cfg.repo && cfg.token);
 
-// ---------- base64 utf-8 ----------
+// ---------- helpers ----------
 function b64encode(str) {
   const bytes = new TextEncoder().encode(str); let bin = '';
   for (let i = 0; i < bytes.length; i += 0x8000) bin += String.fromCharCode.apply(null, bytes.subarray(i, i + 0x8000));
@@ -240,67 +345,6 @@ function b64decode(b64) {
   for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
   return new TextDecoder().decode(bytes);
 }
-
-// ---------- storage: GitHub (private repo) or this browser only ----------
-let data = { version: 1, todos: [] };
-let sha = null;
-
-async function gh(path, opts = {}) {
-  const res = await fetch(`https://api.github.com/repos/${encodeURIComponent(cfg.owner)}/${encodeURIComponent(cfg.repo)}/contents/${path}`, {
-    ...opts,
-    headers: { 'Accept': 'application/vnd.github+json', 'Authorization': `Bearer ${cfg.token}`, 'X-GitHub-Api-Version': '2022-11-28', ...(opts.headers || {}) },
-    cache: 'no-store',
-  });
-  return res;
-}
-async function loadRemote() {
-  if (!hasGitHub()) {
-    const local = store.get('localData', null);
-    return { data: local || { version: 1, todos: [] }, sha: null };
-  }
-  const res = await gh(FILE);
-  if (res.status === 404) return { data: { version: 1, todos: [] }, sha: null, missing: true };
-  if (!res.ok) throw new Error(ghError(res.status));
-  const j = await res.json();
-  return { data: JSON.parse(b64decode(j.content)), sha: j.sha };
-}
-function ghError(status) {
-  if (status === 401) return 'GitHub-Token ungültig oder abgelaufen.';
-  if (status === 403) return 'GitHub-Token hat keine Schreib- oder Leserechte für das Daten-Repo.';
-  if (status === 404) return 'Daten-Repo nicht gefunden. Benutzername, Repo-Name und Token-Rechte prüfen.';
-  return 'GitHub-Fehler ' + status + '.';
-}
-// Apply a change to the freshest data and save. Retries once on conflict.
-async function commit(mutator, message) {
-  for (let attempt = 0; attempt < 3; attempt++) {
-    const fresh = await loadRemote();
-    const next = structuredClone(fresh.data);
-    next.todos = next.todos || [];
-    const result = mutator(next);
-    if (!hasGitHub()) {
-      store.set('localData', next); data = next; sha = null; render(); return result;
-    }
-    const res = await gh(FILE, { method: 'PUT', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ message: message || 'Planer aktualisiert', content: b64encode(JSON.stringify(next, null, 2) + '\n'), ...(fresh.sha ? { sha: fresh.sha } : {}) }) });
-    if (res.status === 409 || res.status === 422) continue;
-    if (!res.ok) throw new Error(ghError(res.status));
-    const j = await res.json(); sha = j.content.sha; data = next; render(); return result;
-  }
-  throw new Error('Speichern fehlgeschlagen, bitte neu laden.');
-}
-async function refresh(quiet) {
-  try {
-    setStatus('Lade …');
-    const r = await loadRemote(); data = r.data; sha = r.sha; data.todos = data.todos || [];
-    render();
-    setStatus(hasGitHub() ? 'Synchronisiert mit GitHub · ' + timeStr() : 'Nur in diesem Browser gespeichert. GitHub in den Einstellungen verbinden.');
-    if (r.missing && !quiet) setStatus('todos.json fehlt im Daten-Repo. Lege die Datei aus der Anleitung an.');
-  } catch (e) { setStatus(e.message); }
-}
-const setStatus = (t) => { $('syncStatus').textContent = t; };
-const timeStr = () => new Date().toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
-
-// ---------- helpers ----------
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const today = () => { const d = new Date(); d.setHours(0, 0, 0, 0); return d; };
 const isoToday = () => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; };
@@ -320,123 +364,225 @@ function clean(fields) {
   if ('verantwortlich' in fields) out.verantwortlich = PEOPLE.includes(fields.verantwortlich) ? fields.verantwortlich : 'Nicht zugewiesen';
   return out;
 }
+let toastTimer = null;
+function toast(text, ms = 2600) {
+  const t = $('toast'); t.textContent = text; t.classList.add('show');
+  clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove('show'), ms);
+}
+function setSync(state) { $('sync').className = 'sync' + (state ? ' ' + state : ''); }
 
-// ---------- rendering ----------
+// ---------- storage: GitHub (private repo) or this device only ----------
+// The last loaded list is cached on the device, so the app opens instantly and offline.
+let data = store.get('cache', null) || { version: 1, todos: [] };
+
+async function gh(path, opts = {}) {
+  return fetch(`https://api.github.com/repos/${encodeURIComponent(cfg.owner)}/${encodeURIComponent(cfg.repo)}/contents/${path}`, {
+    ...opts,
+    headers: { 'Accept': 'application/vnd.github+json', 'Authorization': `Bearer ${cfg.token}`, 'X-GitHub-Api-Version': '2022-11-28', ...(opts.headers || {}) },
+    cache: 'no-store',
+  });
+}
+function ghError(status) {
+  if (status === 401) return 'GitHub-Token ungültig oder abgelaufen.';
+  if (status === 403) return 'GitHub-Token hat keine Rechte für das Daten-Repo.';
+  if (status === 404) return 'Daten-Repo nicht gefunden. Benutzername, Repo und Token prüfen.';
+  return 'GitHub-Fehler ' + status + '.';
+}
+async function loadRemote() {
+  if (!hasGitHub()) return { data: store.get('localData', null) || { version: 1, todos: [] }, sha: null };
+  const res = await gh(FILE);
+  if (res.status === 404) return { data: { version: 1, todos: [] }, sha: null, missing: true };
+  if (!res.ok) throw new Error(ghError(res.status));
+  const j = await res.json();
+  return { data: JSON.parse(b64decode(j.content)), sha: j.sha };
+}
+function setData(next) { data = next; data.todos = data.todos || []; store.set('cache', data); render(); }
+// Apply a change to the freshest data and save; retries on conflicts.
+async function commit(mutator, message) {
+  setSync('busy');
+  try {
+    for (let attempt = 0; attempt < 3; attempt++) {
+      const fresh = await loadRemote();
+      const next = structuredClone(fresh.data); next.todos = next.todos || [];
+      const result = mutator(next);
+      if (!hasGitHub()) { store.set('localData', next); setData(next); setSync(''); return result; }
+      const res = await gh(FILE, { method: 'PUT', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: message || 'Planer aktualisiert', content: b64encode(JSON.stringify(next, null, 2) + '\n'), ...(fresh.sha ? { sha: fresh.sha } : {}) }) });
+      if (res.status === 409 || res.status === 422) continue;
+      if (!res.ok) throw new Error(ghError(res.status));
+      setData(next); setSync(''); return result;
+    }
+    throw new Error('Speichern fehlgeschlagen, bitte nochmal versuchen.');
+  } catch (e) {
+    setSync('err');
+    throw new Error(navigator.onLine === false ? 'Keine Internetverbindung. Nicht gespeichert.' : e.message);
+  }
+}
+async function refresh(quiet) {
+  setSync('busy');
+  try {
+    const r = await loadRemote(); setData(r.data); setSync('');
+    if (r.missing && !quiet) toast('todos.json fehlt im Daten-Repo.');
+  } catch (e) {
+    setSync('err');
+    if (!quiet || navigator.onLine !== false) toast(navigator.onLine === false ? 'Offline. Zeige den letzten Stand.' : e.message, 3500);
+  }
+}
+
+// ---------- list rendering ----------
 let flashIds = new Set();
+const filt = Object.assign({ s: 'offen', w: '', g: 'bereich' }, store.get('filters', {}));
 function render() {
   const todos = data.todos;
   const open = todos.filter((t) => t.status !== 'erledigt').length;
   const days = Math.max(0, Math.round((WEDDING - today()) / 864e5));
-  $('statDays').textContent = days;
-  $('statOpen').textContent = open;
   const pct = todos.length ? Math.round(((todos.length - open) / todos.length) * 100) : 0;
-  $('statPct').textContent = pct + ' %'; $('statBar').style.width = pct + '%';
+  $('heroDays').textContent = days === 1 ? 'Noch 1 Tag' : `Noch ${days} Tage`;
+  $('heroOpen').textContent = todos.length ? `${open} offene Aufgaben · ${todos.length - open} erledigt` : (hasGitHub() ? 'Noch keine Aufgaben' : 'Noch nicht verbunden: oben rechts in die Einstellungen');
+  $('ringPct').textContent = pct + ' %';
+  $('ringFg').style.strokeDashoffset = String(169.6 * (1 - pct / 100));
+  $('openBadge').textContent = open; $('openBadge').hidden = !open;
   $('bereiche').innerHTML = [...new Set(todos.map((t) => t.bereich).filter(Boolean))].sort().map((b) => `<option value="${esc(b)}">`).join('');
+  $('btnGroup').textContent = filt.g === 'datum' ? 'Nach Datum' : 'Nach Bereich';
+  document.querySelectorAll('.seg button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.status === filt.s)));
+  document.querySelectorAll('#personChips .chip').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.wer === filt.w)));
 
   const q = $('fSearch').value.trim().toLowerCase();
-  const st = $('fStatus').value, wer = $('fWer').value, grp = $('fGroup').value;
-  let list = todos.filter((t) => (st === 'alle' || (st === 'erledigt') === (t.status === 'erledigt'))
-    && (!wer || (t.verantwortlich || 'Nicht zugewiesen') === wer)
+  const list = todos.filter((t) => (filt.s === 'alle' || (filt.s === 'erledigt') === (t.status === 'erledigt'))
+    && (!filt.w || (t.verantwortlich || 'Nicht zugewiesen') === filt.w)
     && (!q || [t.aufgabe, t.bereich, t.notiz, t.verantwortlich].join(' ').toLowerCase().includes(q)));
 
   const groups = new Map();
-  if (grp === 'datum') {
+  const add = (k, t) => { if (!groups.has(k)) groups.set(k, []); groups.get(k).push(t); };
+  if (filt.g === 'datum') {
     list.sort((a, b) => (a.datum || '9999').localeCompare(b.datum || '9999'));
-    for (const t of list) {
-      const key = t.datum ? new Date(t.datum + 'T00:00').toLocaleDateString('de-DE', { month: 'long', year: 'numeric' }) : 'Ohne Datum';
-      if (!groups.has(key)) groups.set(key, []); groups.get(key).push(t);
-    }
+    for (const t of list) add(t.datum ? new Date(t.datum + 'T00:00').toLocaleDateString('de-DE', { month: 'long', year: 'numeric' }) : 'Ohne Datum', t);
   } else {
     list.sort((a, b) => (a.bereich || '').localeCompare(b.bereich || '', 'de') || (a.datum || '9999').localeCompare(b.datum || '9999'));
-    for (const t of list) { const key = t.bereich || 'Ohne Bereich'; if (!groups.has(key)) groups.set(key, []); groups.get(key).push(t); }
+    for (const t of list) add(t.bereich || 'Ohne Bereich', t);
   }
-
-  if (!list.length) { $('list').innerHTML = `<div class="card empty">${todos.length ? 'Keine Aufgaben für diesen Filter.' : 'Noch keine Aufgaben.'}</div>`; return; }
+  if (!list.length) {
+    $('list').innerHTML = `<div class="empty">${todos.length ? (filt.s === 'offen' && !q && !filt.w ? 'Alles erledigt. 🎉' : 'Nichts gefunden.') : ''}</div>`;
+    return;
+  }
   const t0 = today();
   let html = '';
   for (const [name, items] of groups) {
-    html += `<div class="group"><h2>${esc(name)} · ${items.length}</h2><div class="card">`;
+    html += `<div class="group"><h2>${esc(name)}</h2><div class="card">`;
     for (const t of items) {
       const done = t.status === 'erledigt';
       let dateCls = '';
       if (t.datum && !done) { const diff = (new Date(t.datum + 'T00:00') - t0) / 864e5; dateCls = diff < 0 ? 'late' : diff <= 14 ? 'due' : ''; }
       html += `<div class="todo${done ? ' done' : ''}" data-id="${esc(t.id)}">
-        <input type="checkbox" ${done ? 'checked' : ''} aria-label="Erledigt">
+        <button class="check" aria-label="${done ? 'Wieder öffnen' : 'Erledigt'}"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></button>
         <div class="main"><div class="title">${esc(t.aufgabe)}</div>
         ${t.notiz ? `<div class="note">${esc(t.notiz)}</div>` : ''}
-        <div class="meta">${t.datum ? `<span class="pill ${dateCls}">${fmtDate(t.datum)}</span>` : ''}
+        ${(t.datum || (t.verantwortlich && t.verantwortlich !== 'Nicht zugewiesen') || flashIds.has(t.id) || filt.g === 'datum') ? `<div class="meta">${t.datum ? `<span class="pill ${dateCls}">${fmtDate(t.datum)}</span>` : ''}
         ${t.verantwortlich && t.verantwortlich !== 'Nicht zugewiesen' ? `<span class="pill">${esc(t.verantwortlich)}</span>` : ''}
-        ${grp === 'datum' && t.bereich ? `<span class="pill">${esc(t.bereich)}</span>` : ''}
-        ${flashIds.has(t.id) ? '<span class="pill flash">geändert</span>' : ''}</div></div></div>`;
+        ${filt.g === 'datum' && t.bereich ? `<span class="pill">${esc(t.bereich)}</span>` : ''}
+        ${flashIds.has(t.id) ? '<span class="pill flash">geändert</span>' : ''}</div>` : ''}</div></div>`;
     }
     html += '</div></div>';
   }
   $('list').innerHTML = html;
 }
+const saveFilters = () => store.set('filters', filt);
+document.querySelector('.seg').addEventListener('click', (e) => { const b = e.target.closest('button'); if (!b) return; filt.s = b.dataset.status; saveFilters(); render(); });
+$('personChips').addEventListener('click', (e) => { const b = e.target.closest('.chip'); if (!b) return; filt.w = b.dataset.wer; saveFilters(); render(); });
+$('btnGroup').onclick = () => { filt.g = filt.g === 'datum' ? 'bereich' : 'datum'; saveFilters(); render(); };
+$('fSearch').addEventListener('input', render);
 
-$('list').addEventListener('click', async (e) => {
+async function setStatus(id, done) {
+  const t = data.todos.find((x) => x.id === id); if (!t) return;
+  const before = t.status;
+  t.status = done ? 'erledigt' : 'offen'; render(); // optimistic
+  if (navigator.vibrate) navigator.vibrate(10);
+  try { await commit((d) => { const x = d.todos.find((y) => y.id === id); if (x) x.status = done ? 'erledigt' : 'offen'; }, (done ? 'Erledigt: ' : 'Wieder offen: ') + t.aufgabe); toast(done ? 'Erledigt' : 'Wieder offen', 1400); }
+  catch (err) { t.status = before; render(); toast(err.message, 3500); }
+}
+$('list').addEventListener('click', (e) => {
   const row = e.target.closest('.todo'); if (!row) return;
   const id = row.dataset.id;
-  if (e.target.matches('input[type=checkbox]')) {
-    const checked = e.target.checked;
-    try { await commit((d) => { const t = d.todos.find((x) => x.id === id); if (t) t.status = checked ? 'erledigt' : 'offen'; }, (checked ? 'Erledigt: ' : 'Wieder offen: ') + id); setStatus('Gespeichert · ' + timeStr()); }
-    catch (err) { setStatus(err.message); e.target.checked = !checked; }
-    return;
-  }
+  if (e.target.closest('.check')) { const t = data.todos.find((x) => x.id === id); if (t) setStatus(id, t.status !== 'erledigt'); return; }
   openTodo(data.todos.find((x) => x.id === id));
 });
-['fSearch', 'fStatus', 'fWer', 'fGroup'].forEach((id) => $(id).addEventListener('input', () => { store.set('filters', { s: $('fStatus').value, w: $('fWer').value, g: $('fGroup').value }); render(); }));
 
-// ---------- todo dialog ----------
-let editingId = null;
+// ---------- todo sheet ----------
+let editingId = null, editWer = 'Nicht zugewiesen';
+function setWer(v) { editWer = v; document.querySelectorAll('#tWer button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.v === v))); }
+$('tWer').addEventListener('click', (e) => { const b = e.target.closest('button'); if (b) setWer(b.dataset.v); });
 function openTodo(t) {
   editingId = t ? t.id : null;
-  $('todoTitle').textContent = t ? 'Aufgabe bearbeiten' : 'Neue Aufgabe';
+  $('todoTitle').textContent = t ? 'Bearbeiten' : 'Neue Aufgabe';
   $('tAufgabe').value = t?.aufgabe || ''; $('tBereich').value = t?.bereich || ''; $('tDatum').value = t?.datum || '';
-  $('tWer').value = t?.verantwortlich || 'Nicht zugewiesen'; $('tStatus').value = t?.status || 'offen'; $('tNotiz').value = t?.notiz || '';
-  $('tDelete').style.display = t ? '' : 'none';
+  $('tNotiz').value = t?.notiz || ''; setWer(t?.verantwortlich || 'Nicht zugewiesen');
+  $('tToggle').hidden = !t; $('tDelete').hidden = !t;
+  if (t) $('tToggle').textContent = t.status === 'erledigt' ? 'Wieder öffnen' : 'Als erledigt markieren';
   $('dlgTodo').showModal();
+  if (!t) setTimeout(() => $('tAufgabe').focus(), 280);
 }
-$('btnAdd').onclick = () => openTodo(null);
+$('fab').onclick = () => openTodo(null);
 $('tCancel').onclick = () => $('dlgTodo').close();
 $('todoForm').addEventListener('submit', async (e) => {
   e.preventDefault();
-  const fields = clean({ aufgabe: $('tAufgabe').value, bereich: $('tBereich').value, datum: $('tDatum').value, verantwortlich: $('tWer').value, status: $('tStatus').value, notiz: $('tNotiz').value });
-  if (!fields.aufgabe) return;
+  const fields = clean({ aufgabe: $('tAufgabe').value, bereich: $('tBereich').value, datum: $('tDatum').value, verantwortlich: editWer, notiz: $('tNotiz').value });
+  if (!fields.aufgabe) { $('tAufgabe').focus(); return; }
   $('dlgTodo').close();
+  const id = editingId;
   try {
-    const id = editingId;
     await commit((d) => {
       if (id) { const t = d.todos.find((x) => x.id === id); if (t) Object.assign(t, fields); }
-      else d.todos.push({ id: newId(d.todos), ...fields });
+      else d.todos.push({ id: newId(d.todos), status: 'offen', ...fields });
     }, (id ? 'Geändert: ' : 'Neu: ') + fields.aufgabe);
-    setStatus('Gespeichert · ' + timeStr());
-  } catch (err) { setStatus(err.message); }
+    toast(id ? 'Gespeichert' : 'Aufgabe angelegt', 1400);
+  } catch (err) { toast(err.message, 3500); }
 });
+$('tToggle').onclick = () => { const t = data.todos.find((x) => x.id === editingId); $('dlgTodo').close(); if (t) setStatus(t.id, t.status !== 'erledigt'); };
 $('tDelete').onclick = async () => {
   const id = editingId; const t = data.todos.find((x) => x.id === id);
   if (!t || !confirm(`„${t.aufgabe}“ löschen?`)) return;
   $('dlgTodo').close();
-  try { await commit((d) => { d.todos = d.todos.filter((x) => x.id !== id); }, 'Gelöscht: ' + t.aufgabe); setStatus('Gelöscht · ' + timeStr()); }
-  catch (err) { setStatus(err.message); }
+  try { await commit((d) => { d.todos = d.todos.filter((x) => x.id !== id); }, 'Gelöscht: ' + t.aufgabe); toast('Gelöscht', 1400); }
+  catch (err) { toast(err.message, 3500); }
 };
+// Tap on the dimmed background closes a sheet.
+document.querySelectorAll('dialog.sheet').forEach((d) => d.addEventListener('click', (e) => { if (e.target === d) d.close(); }));
+
+// ---------- views / tabs ----------
+let view = 'list';
+function showView(v) {
+  view = v;
+  document.querySelectorAll('.tab').forEach((t) => t.setAttribute('aria-selected', String(t.dataset.view === v)));
+  $('viewList').hidden = v !== 'list'; $('viewChat').hidden = v !== 'chat'; $('fab').hidden = v !== 'list';
+  window.scrollTo(0, v === 'chat' ? document.body.scrollHeight : 0);
+  if (v === 'chat') renderChat();
+}
+document.querySelectorAll('.tab').forEach((t) => t.addEventListener('click', () => showView(t.dataset.view)));
+addEventListener('scroll', () => $('appbar').classList.toggle('scrolled', scrollY > 4), { passive: true });
 
 // ---------- chat (Gemini) ----------
-let history = store.get('chat', []);
+let chatLog = store.get('chat', []);
+let thinking = false;
+const SUGGESTIONS = ['Was ist diese Woche fällig?', 'Was muss Corinna noch machen?', 'Was ist überfällig?'];
 function renderChat() {
-  $('chatlog').innerHTML = history.map((m, i) => {
+  let html = '';
+  if (!chatLog.length) {
+    html += `<div class="welcome"><h2>Was hat sich getan?</h2>Schreib einfach, z. B. „DJ ist gebucht, Anzahlung bis 15.01. macht Corinna“. Ich trage es in die Liste ein.<div class="suggest">${SUGGESTIONS.map((s) => `<button type="button" data-s="${esc(s)}">${esc(s)}</button>`).join('')}</div></div>`;
+  }
+  html += chatLog.map((m, i) => {
     if (m.role === 'user') return `<div class="msg me">${esc(m.text)}</div>`;
     const changes = m.changes?.length ? `<ul>${m.changes.map((c) => `<li>${esc(c)}</li>`).join('')}</ul>` : '';
-    const undo = m.undo && !m.undone ? `<br><button class="undo" data-i="${i}">Rückgängig</button>` : (m.undone ? '<div class="hint">Rückgängig gemacht.</div>' : '');
+    const undo = m.undo && !m.undone ? `<div><button class="undo" data-i="${i}">Rückgängig</button></div>` : (m.undone ? '<div class="undone">Rückgängig gemacht.</div>' : '');
     return `<div class="msg ${m.error ? 'err' : 'bot'}">${esc(m.text)}${changes}${undo}</div>`;
   }).join('');
-  $('chatlog').scrollTop = $('chatlog').scrollHeight;
+  if (thinking) html += '<div class="typing"><i></i><i></i><i></i></div>';
+  $('msgs').innerHTML = html;
+  requestAnimationFrame(() => window.scrollTo(0, document.body.scrollHeight));
 }
-function pushChat(m) { history.push(m); history = history.slice(-40); store.set('chat', history); renderChat(); }
+function pushChat(m) { chatLog.push(m); chatLog = chatLog.slice(-40); store.set('chat', chatLog); renderChat(); }
 
 function systemPrompt() {
-  const d = new Date();
-  const weekday = d.toLocaleDateString('de-DE', { weekday: 'long' });
+  const weekday = new Date().toLocaleDateString('de-DE', { weekday: 'long' });
   return `Du bist der Assistent im Hochzeitsplaner von Robin und Corinna. Hochzeit: 26.06.2027, The White House, Mahlberg. Standesamtliche Trauung: eigener Tag, Wunschtermin 11.06.2027.
 Heute ist ${weekday}, ${fmtDate(isoToday())} (Zeitzone Europe/Berlin).
 
@@ -468,11 +614,11 @@ ${JSON.stringify(data.todos.map(({ id, aufgabe, bereich, datum, notiz, status, v
 
 async function askGemini(text) {
   const contents = [];
-  for (const m of history.slice(-12)) {
+  for (const m of chatLog.slice(-12)) {
     if (m.error) continue;
     contents.push({ role: m.role === 'user' ? 'user' : 'model', parts: [{ text: m.role === 'user' ? m.text : JSON.stringify({ antwort: m.text }) }] });
   }
-  contents.push({ role: 'user', parts: [{ text }] });
+  if (!contents.length || contents[contents.length - 1].role !== 'user' || contents[contents.length - 1].parts[0].text !== text) contents.push({ role: 'user', parts: [{ text }] });
   const body = JSON.stringify({ systemInstruction: { parts: [{ text: systemPrompt() }] }, contents, generationConfig: { responseMimeType: 'application/json' } });
   // Try the chosen model first, then fall back when a model is retired, overloaded or slow.
   const models = [...new Set([cfg.model, ...FALLBACK_MODELS].filter(Boolean))];
@@ -481,15 +627,11 @@ async function askGemini(text) {
     const ctrl = new AbortController(); const timer = setTimeout(() => ctrl.abort(), 30000);
     try {
       res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent`, {
-        method: 'POST', signal: ctrl.signal,
-        headers: { 'Content-Type': 'application/json', 'x-goog-api-key': cfg.gemini }, body,
+        method: 'POST', signal: ctrl.signal, headers: { 'Content-Type': 'application/json', 'x-goog-api-key': cfg.gemini }, body,
       });
-    } catch { res = null; lastErr = `Modell „${model}“ antwortet nicht.`; continue; }
+    } catch { res = null; lastErr = navigator.onLine === false ? 'Keine Internetverbindung.' : `Modell „${model}“ antwortet nicht.`; if (navigator.onLine === false) break; continue; }
     finally { clearTimeout(timer); }
-    if (res.ok) {
-      if (model !== cfg.model) { cfg.model = model; store.set('cfg', cfg); }
-      break;
-    }
+    if (res.ok) { if (model !== cfg.model) { cfg.model = model; store.set('cfg', cfg); } break; }
     let msg = ''; try { msg = (await res.json()).error?.message || ''; } catch {}
     if (res.status === 400 || res.status === 401 || res.status === 403) throw new Error('Gemini-Schlüssel ungültig oder gesperrt. ' + msg);
     lastErr = res.status === 429 ? 'Gemini-Limit erreicht. In ein paar Minuten nochmal versuchen.'
@@ -518,13 +660,12 @@ function describe(op, before) {
   return `${before?.aufgabe || op.id}: ${parts.join(', ') || 'geändert'}`;
 }
 
-$('chatform').addEventListener('submit', async (e) => {
-  e.preventDefault();
-  const text = $('chatinput').value.trim(); if (!text) return;
+async function sendChat(text) {
+  if (!text || thinking) return;
   if (!cfg.gemini) { openSettings('Für den Chat fehlt der Gemini-Schlüssel.'); return; }
   $('chatinput').value = ''; autosize();
   pushChat({ role: 'user', text });
-  $('chatsend').disabled = true; $('chatsend').textContent = '…';
+  thinking = true; renderChat();
   try {
     await refresh(true);
     const reply = await askGemini(text);
@@ -549,28 +690,32 @@ $('chatform').addEventListener('submit', async (e) => {
         }
         return out;
       }, 'Chat: ' + text.slice(0, 60));
-      flashIds = touched; render(); setTimeout(() => { flashIds = new Set(); render(); }, 8000);
+      flashIds = touched; render(); setTimeout(() => { flashIds = new Set(); render(); }, 15000);
     }
+    thinking = false;
     pushChat({ role: 'bot', text: reply.antwort || (changes.length ? 'Erledigt.' : 'Keine Änderung.'), changes, undo: changes.length ? snapshot : null });
-    if (changes.length) setStatus('Gespeichert · ' + timeStr());
   } catch (err) {
+    thinking = false;
     pushChat({ role: 'bot', error: true, text: err.message });
-  } finally { $('chatsend').disabled = false; $('chatsend').textContent = 'Senden'; }
-});
-$('chatlog').addEventListener('click', async (e) => {
+  }
+}
+$('composer').addEventListener('submit', (e) => { e.preventDefault(); sendChat($('chatinput').value.trim()); });
+$('msgs').addEventListener('click', async (e) => {
+  const s = e.target.closest('[data-s]'); if (s) { sendChat(s.dataset.s); return; }
   const b = e.target.closest('.undo'); if (!b) return;
-  const m = history[+b.dataset.i]; if (!m?.undo) return;
+  const m = chatLog[+b.dataset.i]; if (!m?.undo) return;
   b.disabled = true;
-  try { await commit((d) => { d.todos = structuredClone(m.undo); }, 'Rückgängig: Chat-Änderung'); m.undone = true; m.undo = null; store.set('chat', history); renderChat(); setStatus('Rückgängig gemacht · ' + timeStr()); }
-  catch (err) { b.disabled = false; setStatus(err.message); }
+  try { await commit((d) => { d.todos = structuredClone(m.undo); }, 'Rückgängig: Chat-Änderung'); m.undone = true; m.undo = null; store.set('chat', chatLog); renderChat(); toast('Rückgängig gemacht', 1400); }
+  catch (err) { b.disabled = false; toast(err.message, 3500); }
 });
-const autosize = () => { const t = $('chatinput'); t.style.height = 'auto'; t.style.height = Math.min(140, t.scrollHeight) + 'px'; };
+const autosize = () => { const t = $('chatinput'); t.style.height = 'auto'; t.style.height = Math.min(140, t.scrollHeight) + 'px'; $('chatsend').disabled = !t.value.trim(); };
 $('chatinput').addEventListener('input', autosize);
-$('chatinput').addEventListener('keydown', (e) => { if (e.key === 'Enter' && !e.shiftKey && !e.isComposing && matchMedia('(pointer:fine)').matches) { e.preventDefault(); $('chatform').requestSubmit(); } });
+$('chatinput').addEventListener('keydown', (e) => { if (e.key === 'Enter' && !e.shiftKey && !e.isComposing && matchMedia('(pointer:fine)').matches) { e.preventDefault(); $('composer').requestSubmit(); } });
 
 // ---------- settings ----------
 function openSettings(info) {
-  $('sOwner').value = cfg.owner; $('sRepo').value = cfg.repo; $('sToken').value = cfg.token; $('sGemini').value = cfg.gemini; $('sModel').value = cfg.model;
+  $('sOwner').value = cfg.owner; $('sRepo').value = cfg.repo; $('sToken').value = cfg.token; $('sGemini').value = cfg.gemini;
+  $('sModel').value = cfg.model === DEFAULT_MODEL ? '' : cfg.model;
   $('sInfo').textContent = info || ''; $('dlgSettings').showModal();
 }
 $('btnSettings').onclick = () => openSettings();
@@ -578,9 +723,10 @@ $('sCancel').onclick = () => $('dlgSettings').close();
 $('settingsForm').addEventListener('submit', async (e) => {
   e.preventDefault();
   cfg = { owner: $('sOwner').value.trim(), repo: $('sRepo').value.trim() || 'hochzeit-daten', token: $('sToken').value.trim(), gemini: $('sGemini').value.trim(), model: $('sModel').value.trim() || DEFAULT_MODEL };
-  store.set('cfg', cfg);
+  store.set('cfg', cfg); store.set('cache', null);
   $('dlgSettings').close();
   await refresh();
+  if (hasGitHub() && $('sync').className === 'sync') toast('Verbunden mit GitHub', 1600);
 });
 $('sLoadModels').onclick = async () => {
   const key = $('sGemini').value.trim(); if (!key) { $('sInfo').textContent = 'Erst den Gemini-Schlüssel eintragen.'; return; }
@@ -588,9 +734,9 @@ $('sLoadModels').onclick = async () => {
     const res = await fetch('https://generativelanguage.googleapis.com/v1beta/models?pageSize=200', { headers: { 'x-goog-api-key': key } });
     if (!res.ok) throw new Error('Schlüssel ungültig (' + res.status + ').');
     const j = await res.json();
-    const names = (j.models || []).filter((m) => (m.supportedGenerationMethods || []).includes('generateContent')).map((m) => m.name.replace(/^models\//, '')).filter((n) => /flash/.test(n));
+    const names = (j.models || []).filter((m) => (m.supportedGenerationMethods || []).includes('generateContent')).map((m) => m.name.replace(/^models\//, '')).filter((n) => /flash/.test(n) && !/image|tts|transcribe/.test(n));
     $('modelList').innerHTML = names.map((n) => `<option value="${esc(n)}">`).join('');
-    $('sInfo').textContent = names.length ? 'Verfügbare Flash-Modelle: ' + names.join(', ') : 'Keine passenden Modelle gefunden.';
+    $('sInfo').textContent = names.length ? 'Verfügbar: ' + names.join(', ') : 'Keine passenden Modelle gefunden.';
   } catch (err) { $('sInfo').textContent = err.message; }
 };
 
@@ -607,7 +753,7 @@ function applySetupHash() {
     try {
       const p = JSON.parse(fromB64url(code));
       cfg = { owner: p.o || '', repo: p.r || 'hochzeit-daten', token: p.t || '', gemini: p.g || '', model: p.m || DEFAULT_MODEL };
-      store.set('cfg', cfg); store.set('setupApplied', code);
+      store.set('cfg', cfg); store.set('setupApplied', code); store.set('cache', null); data = { version: 1, todos: [] };
     } catch { return; }
   }
   const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
@@ -636,14 +782,24 @@ $('sQr').onclick = async () => {
 };
 $('dlgQr').addEventListener('close', () => { $('qrBox').innerHTML = ''; });
 
+// ---------- offline + updates ----------
+if ('serviceWorker' in navigator && location.protocol === 'https:') {
+  navigator.serviceWorker.register('sw.js').catch(() => {});
+  let reloading = false;
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    if (reloading || !navigator.serviceWorker.controller) return;
+    toast('Neue Version geladen. Tippen zum Aktualisieren.', 8000);
+    $('toast').onclick = () => { reloading = true; location.reload(); };
+  });
+}
+addEventListener('online', () => refresh(true));
+
 // ---------- start ----------
 applySetupHash();
-const f = store.get('filters', null);
-if (f) { $('fStatus').value = f.s || 'offen'; $('fWer').value = f.w || ''; $('fGroup').value = f.g || 'bereich'; }
-renderChat();
-refresh();
+render();
+refresh(true);
 document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') refresh(true); });
-if (!hasGitHub() && !cfg.gemini) openSettings('Willkommen. Trag hier einmal die Schlüssel aus der Anleitung ein.');
+if (!hasGitHub() && !cfg.gemini) openSettings('Willkommen. Am einfachsten am Laptop unter Einstellungen „Handy verbinden“ wählen und den QR-Code scannen.');
 })();
 </script>
 </body>
