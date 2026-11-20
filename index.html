@@ -46,7 +46,7 @@ button { cursor: pointer; }
 .appbar.scrolled { border-bottom-color: var(--line); }
 .appbar-inner { max-width: 720px; margin: 0 auto; display: flex; align-items: center; gap: 10px; min-height: 44px; }
 .appbar h1 { flex: 1; margin: 0; font: 400 36px/1 var(--serif2); letter-spacing: -.02em; }
-.mono { font: italic 400 13px/1 var(--serif); color: var(--text); letter-spacing: .02em; border: 1px solid var(--line); border-radius: 50%; width: 44px; height: 40px; display: grid; place-items: center; flex: none; white-space: nowrap; }
+.mono { font: italic 400 12.5px/1 var(--serif); color: var(--text); letter-spacing: 0; border: 1px solid var(--line); border-radius: 50%; width: 40px; height: 40px; display: grid; place-items: center; flex: none; white-space: nowrap; }
 .iconbtn { width: 40px; height: 40px; display: grid; place-items: center; border-radius: 50%; border: 1px solid var(--line); background: var(--bg); color: var(--text); flex: none; }
 .iconbtn svg { width: 21px; height: 21px; }
 .sync { width: 8px; height: 8px; border-radius: 50%; background: var(--sage); flex: none; transition: background .2s; }
@@ -55,8 +55,8 @@ button { cursor: pointer; }
 @keyframes pulse { 50% { opacity: .3; } }
 
 main { max-width: 720px; margin: 0 auto; padding: 6px 16px calc(var(--tabbar-h) + var(--safe-b) + 28px); }
-.view { animation: rise .7s cubic-bezier(.22,.8,.24,1); }
-@keyframes rise { from { opacity: 0; transform: translateY(14px); } }
+.view { animation: rise .38s cubic-bezier(.22,.8,.24,1); }
+@keyframes rise { from { opacity: 0; transform: translateY(10px); } }
 .section-title { display: flex; align-items: baseline; justify-content: space-between; margin: 22px 4px 8px; }
 .section-title h2 { margin: 0; font: 600 11px/1.4 var(--label); text-transform: uppercase; letter-spacing: .22em; color: var(--sage); }
 .section-title button { border: 0; background: none; color: var(--text); font: 600 10.5px/1 var(--label); letter-spacing: .16em; text-transform: uppercase; padding: 4px 0; border-bottom: 1px solid var(--line); }
@@ -77,18 +77,19 @@ main { max-width: 720px; margin: 0 auto; padding: 6px 16px calc(var(--tabbar-h) 
 .orn i { width: 6px; height: 6px; transform: rotate(45deg); border: 1px solid currentColor; }
 .hero .when { font: 500 10.5px/1.6 var(--body); letter-spacing: .26em; text-transform: uppercase; margin-top: 6px; }
 .hero .when span + span::before { content: "·"; margin: 0 10px; color: #edcecb; letter-spacing: 0; }
-.countdown { display: flex; justify-content: center; border-block: 1px solid rgba(245,239,228,.3); padding-block: 14px; margin-top: 18px; }
-.countdown div { display: grid; gap: 6px; padding-inline: 14px; min-width: 0; }
+.countdown { display: grid; grid-template-columns: repeat(3, 1fr); border-block: 1px solid rgba(245,239,228,.3); padding-block: 14px; margin-top: 18px; }
+.countdown div { display: grid; gap: 6px; padding-inline: 6px; min-width: 0; align-content: start; }
 .countdown div + div { border-left: 1px solid rgba(245,239,228,.3); }
 .countdown b { font: 400 30px/1 var(--serif); font-variant-numeric: tabular-nums lining-nums; }
-.countdown span { font: 500 9.5px/1 var(--body); letter-spacing: .16em; text-transform: uppercase; color: #dcd4c5; }
+.countdown span { font: 500 9.5px/1.3 var(--body); letter-spacing: .16em; text-transform: uppercase; color: #dcd4c5; }
 .tiles { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 14px; }
 .tile { background: var(--surface); border-radius: 0; padding: 16px 14px 14px; border: 0; color: var(--text); position: relative; text-align: left; display: flex; flex-direction: column; gap: 4px; min-height: 118px; }
 .tile:active { transform: scale(.98); }
 .tile .ico { width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center; border: 1px solid var(--line); background: var(--bg); color: var(--text); margin-bottom: 6px; }
 .tile .ico svg { width: 18px; height: 18px; }
 .tile .val { font: 400 32px/1.05 var(--serif2); letter-spacing: -.01em; }
-.tile .lbl { font-size: 13px; color: var(--muted); line-height: 1.3; }
+.tile .lbl { font-size: 13px; color: var(--muted); line-height: 1.3; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 10px; }
+.tile .lbl.over { color: var(--danger); }
 .tile .bar { margin-top: auto; }
 .bar { height: 6px; border-radius: 99px; background: var(--surface-2); overflow: hidden; }
 .bar i { display: block; height: 100%; border-radius: 99px; background: var(--sage-line); transition: width .6s cubic-bezier(.2,.8,.2,1); }
@@ -210,6 +211,8 @@ details.bcat .items { border-top: 1px solid var(--line); }
 .tabbar-inner { display: flex; width: 100%; max-width: 720px; }
 .tab { flex: 1; height: var(--tabbar-h); border: 0; background: transparent; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; font: 600 9px/1 var(--label); letter-spacing: .12em; text-transform: uppercase; color: var(--muted); position: relative; }
 .tab svg { width: 24px; height: 24px; }
+body.kb-open .tabbar { display: none; }
+body.kb-open .composer { bottom: calc(8px + var(--safe-b)); }
 .tab[aria-selected="true"] { color: var(--text); }
 .tab[aria-selected="true"]::after { content: ""; position: absolute; top: -1px; left: 32%; right: 32%; height: 2px; background: var(--sage-line); border-radius: 0 0 2px 2px; }
 .badge { position: absolute; top: 5px; left: calc(50% + 5px); min-width: 18px; height: 18px; border-radius: 9px; background: var(--blush); color: #2a4939; font: 600 10px/1 var(--label); display: grid; place-items: center; padding: 0 5px; }
@@ -223,7 +226,8 @@ dialog.sheet::backdrop { background: rgba(20,12,8,.42); animation: fadebg .2s; }
 @media (min-width: 700px) { dialog.sheet { margin: auto; border-radius: 0; box-shadow: 0 30px 60px -30px rgba(18,33,25,.45); } }
 .sheet form { padding: 8px 18px calc(18px + var(--safe-b)); }
 .grabber { width: 38px; height: 5px; border-radius: 3px; background: var(--line); margin: 0 auto 10px; }
-.sheet-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; gap: 8px; }
+.sheet-head { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; margin-bottom: 14px; gap: 8px; }
+.sheet-head > :first-child { justify-self: start; } .sheet-head > :last-child { justify-self: end; }
 .sheet-head h3 { margin: 0; font: 400 24px/1.1 var(--serif2); text-align: center; }
 .textbtn { border: 0; background: transparent; color: var(--text); font-weight: 500; padding: 8px 4px; font-size: 16px; min-width: 72px; }
 .textbtn.l { text-align: left; } .textbtn.r { text-align: right; }
@@ -253,6 +257,34 @@ dialog.sheet::backdrop { background: rgba(20,12,8,.42); animation: fadebg .2s; }
 .banner { background: var(--surface); color: var(--text); border-radius: 0; padding: 12px 14px; margin: 8px 0; font-size: 15px; }
 .toast { position: fixed; left: 50%; bottom: calc(var(--tabbar-h) + var(--safe-b) + 84px); transform: translate(-50%, 20px); opacity: 0; background: var(--text); color: var(--bg); padding: 10px 16px; border-radius: 14px; font-size: 14px; z-index: 50; transition: opacity .2s, transform .2s; max-width: calc(100% - 32px); text-align: center; pointer-events: none; }
 .toast.show { opacity: 1; transform: translate(-50%, 0); pointer-events: auto; }
+@media (min-width: 1000px) {
+  :root { --rail: 248px; }
+  body { padding-left: var(--rail); }
+  .appbar { padding-top: 18px; padding-bottom: 14px; }
+  .appbar-inner, main { max-width: 920px; }
+  main { padding: 6px 32px 48px; }
+  .appbar { padding-inline: 32px; }
+  .tabbar { top: 0; right: auto; width: var(--rail); flex-direction: column; justify-content: flex-start; border-top: 0; border-right: 1px solid var(--line); padding: 28px 16px; background: var(--bg); }
+  .tabbar::before { content: "Corinna & Robin"; display: block; font: italic 400 23px/1.1 var(--serif); color: var(--text); padding: 6px 14px 28px; white-space: nowrap; }
+  .tabbar-inner { flex-direction: column; gap: 4px; }
+  .tab { flex: none; height: 46px; flex-direction: row; justify-content: flex-start; gap: 14px; padding: 0 14px; font-size: 11px; border-radius: 99px; }
+  .tab svg { width: 21px; height: 21px; }
+  .tab:hover { background: var(--surface-2); }
+  .tab[aria-selected="true"] { background: var(--surface); }
+  .tab[aria-selected="true"]::after { display: none; }
+  .badge { position: static; margin-left: auto; }
+  .tiles { grid-template-columns: repeat(4, 1fr); }
+  .hero { padding: 44px 32px 28px; }
+  .hero .names { font-size: 64px; }
+  .countdown { max-width: 560px; margin-inline: auto; }
+  .fab { right: 40px; bottom: 32px; }
+  .toast { bottom: 40px; left: calc(50% + var(--rail) / 2); }
+  .composer { bottom: 24px; }
+  .chatview { min-height: calc(100dvh - 120px); }
+  .mono { display: none; }
+  #guestList, #todoList { display: grid; grid-template-columns: 1fr 1fr; gap: 0 24px; align-items: start; }
+  #guestList > .empty, #todoList > .empty { grid-column: 1 / -1; }
+}
 @media (max-width: 360px) { .stats3 { grid-template-columns: repeat(2, 1fr); } .hero .days { font-size: 54px; } }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
 </style>
@@ -301,9 +333,10 @@ dialog.sheet::backdrop { background: rgba(20,12,8,.42); animation: fadebg .2s; }
         <span class="val num" id="tBudget">–</span><span class="lbl" id="tBudgetL">von Budget geplant</span>
         <span class="bar" id="tBudgetBarW"><i id="tBudgetBar" style="width:0"></i></span>
       </button>
-      <button class="tile" data-go="chat">
-        <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20.5l1.4-4.9A8 8 0 1 1 21 12z"/></svg></span>
-        <span class="val">Chat</span><span class="lbl">Einfach schreiben, was sich getan hat</span>
+      <button class="tile" data-go="budget">
+        <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4 4L19 7"/><circle cx="12" cy="12" r="10"/></svg></span>
+        <span class="val num" id="tPaid">–</span><span class="lbl" id="tPaidL">bezahlt</span>
+        <span class="bar ok"><i id="tPaidBar" style="width:0"></i></span>
       </button>
     </div>
     <div class="section-title"><h2>Als Nächstes</h2><button data-go="todos">Alle</button></div>
@@ -478,7 +511,7 @@ dialog.sheet::backdrop { background: rgba(20,12,8,.42); animation: fadebg .2s; }
   <form method="dialog" id="limitForm">
     <div class="grabber"></div>
     <div class="sheet-head"><button type="button" class="textbtn l" data-close>Abbrechen</button><h3>Budget-Grenze</h3><button type="submit" class="textbtn r">Fertig</button></div>
-    <div class="field"><label for="lValue">Gesamtbudget (€)</label><input id="lValue" type="number" inputmode="numeric" min="0" step="100"></div>
+    <div class="field"><label for="lValue">Gesamtbudget (€)</label><input id="lValue" type="text" inputmode="decimal" autocomplete="off" placeholder="z. B. 30.000"></div>
   </form>
 </dialog>
 
@@ -555,7 +588,7 @@ const round2 = (n) => Math.round((Number(n) || 0) * 100) / 100;
 const eur = (n) => { const v = round2(n); return new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR', minimumFractionDigits: Number.isInteger(v) ? 0 : 2, maximumFractionDigits: 2 }).format(v); };
 const toInput = (v) => (v === '' || v == null ? '' : String(round2(v)).replace('.', ','));
 const today = () => { const d = new Date(); d.setHours(0, 0, 0, 0); return d; };
-const isoToday = () => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; };
+const isoToday = () => new Date().toLocaleDateString('sv-SE', { timeZone: 'Europe/Berlin' });
 const fmtDate = (iso) => { if (!iso) return ''; const [y, m, d] = iso.split('-'); return `${d}.${m}.${y}`; };
 const validIso = (s) => typeof s === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(s);
 const daysUntil = (iso) => Math.round((new Date(iso + 'T00:00') - today()) / 864e5);
@@ -608,7 +641,7 @@ function setSync(state) { $('sync').className = 'sync' + (state ? ' ' + state : 
 // ---------- storage: GitHub (private repo) or this device only ----------
 // The last loaded data is cached on the device, so the app opens instantly and works offline.
 const db = {};
-for (const k of Object.keys(FILES)) db[k] = store.get('cache_' + k, null) || EMPTY[k]();
+for (const k of Object.keys(FILES)) db[k] = normalize(k, store.get('cache_' + k, null));
 
 async function gh(path, opts = {}) {
   return fetch(`https://api.github.com/repos/${encodeURIComponent(cfg.owner)}/${encodeURIComponent(cfg.repo)}/contents/${path}`, {
@@ -624,7 +657,7 @@ function ghError(status) {
   return 'GitHub-Fehler ' + status + '.';
 }
 async function loadFile(key) {
-  if (!hasGitHub()) return { data: store.get('local_' + key, null) || EMPTY[key](), sha: null };
+  if (!hasGitHub()) return { data: normalize(key, store.get('local_' + key, null)), sha: null };
   const res = await gh(FILES[key]);
   if (res.status === 404) {
     // The repo exists but the file does not yet (only a missing repo is an error).
@@ -634,17 +667,30 @@ async function loadFile(key) {
   }
   if (!res.ok) throw new Error(ghError(res.status));
   const j = await res.json();
-  return { data: JSON.parse(b64decode(j.content)), sha: j.sha };
+  return { data: normalize(key, JSON.parse(b64decode(j.content))), sha: j.sha };
+}
+// Guarantees the expected shape, so a hand-edited or broken file cannot crash the app.
+function normalize(key, d) {
+  const base = EMPTY[key](); const arr = { todos: 'todos', gaeste: 'gaeste', budget: 'posten' }[key];
+  const out = Object.assign(base, d && typeof d === 'object' ? d : {});
+  if (!Array.isArray(out[arr])) out[arr] = [];
+  out[arr] = out[arr].filter((x) => x && typeof x === 'object');
+  return out;
 }
 function setData(key, next) { db[key] = next; store.set('cache_' + key, next); renderAll(); }
+// rev counts finished saves per file, pending counts running ones. A refresh never overwrites a
+// file that was saved or is being saved while it was loading.
+const rev = { todos: 0, gaeste: 0, budget: 0 }, pending = { todos: 0, gaeste: 0, budget: 0 };
 // Apply a change to the freshest version of one file and save it; retries on conflicts.
 async function commit(key, mutator, message) {
-  busy++; setSync('busy'); let ok = false;
+  busy++; pending[key]++; setSync('busy'); let ok = false;
   try {
     for (let attempt = 0; attempt < 3; attempt++) {
       const fresh = await loadFile(key);
       const next = structuredClone(fresh.data);
       const result = mutator(next);
+      // Nothing changed: no save, no commit in the repo.
+      if (JSON.stringify(next) === JSON.stringify(fresh.data)) { setData(key, next); ok = true; return result; }
       if (!hasGitHub()) { store.set('local_' + key, next); setData(key, next); ok = true; return result; }
       const res = await gh(FILES[key], { method: 'PUT', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ message: message || 'Planer aktualisiert', content: b64encode(JSON.stringify(next, null, 2) + '\n'), ...(fresh.sha ? { sha: fresh.sha } : {}) }) });
@@ -656,18 +702,25 @@ async function commit(key, mutator, message) {
   } catch (e) {
     throw new Error(navigator.onLine === false ? 'Keine Internetverbindung. Nicht gespeichert.' : e.message);
   } finally {
-    busy--; setSync(ok ? (busy ? 'busy' : '') : 'err');
+    busy--; pending[key]--; rev[key]++;
+    setSync(ok ? (busy ? 'busy' : '') : 'err');
   }
 }
 async function refresh(quiet) {
-  busy++; setSync('busy');
+  busy++; setSync('busy'); let ok = false;
+  const startRev = { ...rev };
   try {
     const results = await Promise.all(Object.keys(FILES).map(async (k) => [k, (await loadFile(k)).data]));
-    for (const [k, d] of results) { db[k] = d; store.set('cache_' + k, d); }
-    renderAll(); busy--; if (!busy) setSync('');
+    for (const [k, d] of results) {
+      if (pending[k] || rev[k] !== startRev[k]) continue; // a newer save wins
+      db[k] = d; store.set('cache_' + k, d);
+    }
+    ok = true;
   } catch (e) {
-    busy--; setSync('err');
     if (!quiet || navigator.onLine !== false) toast(navigator.onLine === false ? 'Offline. Zeige den letzten Stand.' : e.message, 3500);
+  } finally {
+    busy--; setSync(ok ? (busy ? 'busy' : '') : 'err');
+    try { renderAll(); } catch (e) { console.error(e); }
   }
 }
 
@@ -681,15 +734,21 @@ function renderHome() {
   const open = todos.filter((t) => t.status !== 'erledigt').length;
   const late = todos.filter((t) => t.status !== 'erledigt' && t.datum && daysUntil(t.datum) < 0).length;
   $('tTodo').textContent = open;
-  $('tTodoL').textContent = late ? `offen · ${late} überfällig` : 'Aufgaben offen';
+  $('tTodoL').textContent = late ? `offen · ${late} überfällig` : `offen · ${todos.length - open} erledigt`;
+  $('tTodoL').classList.toggle('over', late > 0);
   $('tTodoBar').style.width = (todos.length ? (todos.length - open) / todos.length * 100 : 0) + '%';
   const yes = guests.filter((g) => g.rsvp === 'Zusage').length;
   $('tGuests').textContent = guests.length;
-  $('tGuestsL').textContent = `Gäste · ${yes} Zusagen`;
+  $('tGuestsL').textContent = `Gäste · ${yes} ${yes === 1 ? 'Zusage' : 'Zusagen'}`;
   $('tGuestsBar').style.width = (guests.length ? yes / guests.length * 100 : 0) + '%';
   const plan = posten.reduce((s, p) => s + effCost(p), 0), limit = db.budget.limit || 0;
   $('tBudget').textContent = eur(plan);
-  $('tBudgetL').textContent = !limit ? 'geplant' : plan > limit ? `geplant · ${eur(plan - limit)} über Budget` : `von ${eur(limit)} geplant`;
+  $('tBudgetL').textContent = !limit ? 'Kosten gesamt' : plan > limit ? `${eur(plan - limit)} über Budget` : `von ${eur(limit)} Budget`;
+  $('tBudgetL').classList.toggle('over', !!limit && plan > limit);
+  const paid = posten.reduce((s, p) => s + (p.bezahlt || 0), 0);
+  $('tPaid').textContent = eur(paid);
+  $('tPaidL').textContent = `bezahlt · ${eur(Math.max(0, plan - paid))} offen`;
+  $('tPaidBar').style.width = Math.min(100, plan ? paid / plan * 100 : 0) + '%';
   $('tBudgetBar').style.width = Math.min(100, limit ? plan / limit * 100 : 0) + '%';
   $('tBudgetBarW').className = 'bar' + (limit && plan > limit ? ' over' : '');
   $('todoBadge').textContent = open; $('todoBadge').hidden = !open;
@@ -721,7 +780,14 @@ function renderTodos() {
   if (tf.g === 'datum') {
     list.sort((a, b) => (a.datum || '9999').localeCompare(b.datum || '9999') || (a.aufgabe || '').localeCompare(b.aufgabe || '', 'de'));
     const t0 = isoToday();
-    for (const t of list) add(!t.datum ? 'Ohne Datum' : (t.datum < t0 && t.status !== 'erledigt') ? 'Überfällig' : new Date(t.datum + 'T00:00').toLocaleDateString('de-DE', { month: 'long', year: 'numeric' }), t);
+    // Open tasks: Überfällig, Heute, Nächste 7 Tage, then by month. Done tasks only by month.
+    const label = (t) => {
+      if (!t.datum) return 'Ohne Datum';
+      if (t.status !== 'erledigt') { const d = daysUntil(t.datum); if (d < 0) return 'Überfällig'; if (d === 0) return 'Heute'; if (d <= 7) return 'Nächste 7 Tage'; }
+      return new Date(t.datum + 'T00:00').toLocaleDateString('de-DE', { month: 'long', year: 'numeric' });
+    };
+    void t0;
+    for (const t of list) add(label(t), t);
   } else {
     list.sort((a, b) => (a.bereich || '').localeCompare(b.bereich || '', 'de') || (a.datum || '9999').localeCompare(b.datum || '9999'));
     for (const t of list) add(t.bereich || 'Ohne Bereich', t);
@@ -734,7 +800,7 @@ function renderTodos() {
       const done = t.status === 'erledigt'; let cls = '';
       if (t.datum && !done) { const d = daysUntil(t.datum); cls = d < 0 ? 'late' : d <= 14 ? 'due' : ''; }
       const who = t.verantwortlich && t.verantwortlich !== 'Nicht zugewiesen' ? t.verantwortlich : '';
-      const metaParts = [t.datum ? `<span class="pill ${cls}">${fmtDate(t.datum)}</span>` : '', who ? `<span class="pill">${esc(who)}</span>` : '',
+      const metaParts = [t.datum ? `<span class="pill ${cls}">${esc(fmtDate(t.datum))}</span>` : '', who ? `<span class="pill">${esc(who)}</span>` : '',
         tf.g === 'datum' && t.bereich ? `<span class="pill">${esc(t.bereich)}</span>` : '', flashIds.has(t.id) ? '<span class="pill flash">geändert</span>' : ''].join('');
       html += `<div class="item todo${done ? ' done' : ''}" data-id="${esc(t.id)}" role="button" tabindex="0">
         <button class="check" aria-label="${done ? 'Wieder öffnen' : 'Erledigt'}"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></button>
@@ -782,14 +848,19 @@ function openTodo(t) {
 $('todoForm').addEventListener('submit', async (e) => {
   e.preventDefault();
   const f = cleanTodo({ aufgabe: $('tAufgabe').value, bereich: $('tBereich').value, datum: $('tDatum').value, verantwortlich: $('tWer').dataset.value, notiz: $('tNotiz').value });
-  if (!f.aufgabe) { $('tAufgabe').focus(); return; }
-  $('dlgTodo').close(); const id = editTodo;
+  if (!f.aufgabe) { $('tAufgabe').focus(); toggleOnSave = false; return; }
+  const id = editTodo;
+  // "Als erledigt markieren" saves the other edits in the same step instead of discarding them.
+  if (toggleOnSave && id) { const cur = db.todos.todos.find((x) => x.id === id); f.status = cur && cur.status === 'erledigt' ? 'offen' : 'erledigt'; }
+  const toggled = toggleOnSave; toggleOnSave = false;
+  $('dlgTodo').close();
   try {
     await commit('todos', (d) => { if (id) { const t = d.todos.find((x) => x.id === id); if (t) Object.assign(t, f); } else d.todos.push({ id: nextId(d.todos, 't'), status: 'offen', ...f }); }, (id ? 'Geändert: ' : 'Neu: ') + f.aufgabe);
-    toast(id ? 'Gespeichert' : 'Aufgabe angelegt', 1400);
+    toast(toggled ? (f.status === 'erledigt' ? 'Erledigt' : 'Wieder offen') : id ? 'Gespeichert' : 'Aufgabe angelegt', 1400);
   } catch (err) { toast(err.message, 3500); }
 });
-$('tToggle').onclick = () => { const t = db.todos.todos.find((x) => x.id === editTodo); $('dlgTodo').close(); if (t) setTodoStatus(t.id, t.status !== 'erledigt'); };
+let toggleOnSave = false;
+$('tToggle').onclick = () => { toggleOnSave = true; $('todoForm').requestSubmit(); };
 $('tDelete').onclick = async () => {
   const id = editTodo; const t = db.todos.todos.find((x) => x.id === id);
   if (!t || !confirm(`„${t.aufgabe}“ löschen?`)) return;
@@ -868,25 +939,30 @@ $('guestForm').addEventListener('submit', async (e) => {
   $('dlgGuest').close(); const id = editGuest;
   try {
     await commit('gaeste', (d) => {
-      let me;
-      if (id) { me = d.gaeste.find((x) => x.id === id); if (!me) return; var oldName = me.name, oldPartner = me.partner; Object.assign(me, f); if (!f.kinderVon) delete me.kinderVon; }
-      else { me = { id: nextId(d.gaeste, 'g'), ...f }; if (!f.kinderVon) delete me.kinderVon; d.gaeste.push(me); }
-      // Partner links are two-sided.
-      if (id && oldPartner && oldPartner !== f.partner) { const old = d.gaeste.find((x) => x.name === oldPartner && x.id !== me.id); if (old && old.partner === oldName) old.partner = ''; }
-      if (f.partner) {
-        const mate = d.gaeste.find((x) => x.name === f.partner && x.id !== me.id);
-        if (mate) { const ex = mate.partner && mate.partner !== me.name && d.gaeste.find((x) => x.name === mate.partner); if (ex && ex.partner === mate.name) ex.partner = ''; mate.partner = me.name; }
-      }
-      if (id && oldName !== me.name) d.gaeste.forEach((x) => { if (x.partner === oldName) x.partner = me.name; if (x.kinderVon === oldName) x.kinderVon = me.name; });
+      if (id) { const me = d.gaeste.find((x) => x.id === id); if (!me) return; const before = { ...me }; Object.assign(me, f); linkGuest(d.gaeste, me, before); }
+      else { const me = { id: nextId(d.gaeste, 'g'), ...f }; d.gaeste.push(me); linkGuest(d.gaeste, me, null); }
     }, (id ? 'Gast geändert: ' : 'Neuer Gast: ') + f.name);
     toast(id ? 'Gespeichert' : 'Gast angelegt', 1400);
   } catch (err) { toast(err.message, 3500); }
 });
+// Partner links are two-sided; renames carry over to partners and children.
+function linkGuest(list, me, before) {
+  const oldName = before && before.name, oldPartner = before && before.partner;
+  if (before && oldPartner && oldPartner !== me.partner) { const old = list.find((x) => x.name === oldPartner && x.id !== me.id); if (old && old.partner === oldName) old.partner = ''; }
+  if (me.partner) {
+    const mate = list.find((x) => x.name === me.partner && x.id !== me.id);
+    if (mate) { const ex = mate.partner && mate.partner !== me.name && list.find((x) => x.name === mate.partner && x.id !== me.id); if (ex && ex.partner === mate.name) ex.partner = ''; mate.partner = me.name; }
+  }
+  if (before && oldName && oldName !== me.name) list.forEach((x) => { if (x.id === me.id) return; if (x.partner === oldName) x.partner = me.name; if (x.kinderVon === oldName) x.kinderVon = me.name; });
+  if (!me.kinderVon) delete me.kinderVon;
+}
+// After deleting a guest: no partner or child keeps pointing at the name.
+function unlinkGuest(list, g) { list.forEach((x) => { if (x.partner === g.name) x.partner = ''; if (x.kinderVon === g.name) delete x.kinderVon; }); }
 $('gDelete').onclick = async () => {
   const id = editGuest; const g = db.gaeste.gaeste.find((x) => x.id === id);
   if (!g || !confirm(`„${g.name}“ löschen?`)) return;
   $('dlgGuest').close();
-  try { await commit('gaeste', (d) => { d.gaeste = d.gaeste.filter((x) => x.id !== id); d.gaeste.forEach((x) => { if (x.partner === g.name) x.partner = ''; }); }, 'Gast gelöscht: ' + g.name); toast('Gelöscht', 1400); }
+  try { await commit('gaeste', (d) => { d.gaeste = d.gaeste.filter((x) => x.id !== id); unlinkGuest(d.gaeste, g); }, 'Gast gelöscht: ' + g.name); toast('Gelöscht', 1400); }
   catch (err) { toast(err.message, 3500); }
 };
 
@@ -900,9 +976,9 @@ function restCost(p) { return p.abgeschlossen ? 0 : Math.max(0, (p.kosten || 0) 
 function renderBudget() {
   const posten = db.budget.posten, limit = db.budget.limit || 0;
   const plan = posten.reduce((s, p) => s + effCost(p), 0), paid = posten.reduce((s, p) => s + (p.bezahlt || 0), 0);
-  const closed = posten.filter((p) => p.abgeschlossen), delta = closed.reduce((s, p) => s + (p.bezahlt || 0) - (p.kosten || 0), 0);
+  const closed = posten.filter((p) => p.abgeschlossen), delta = round2(closed.filter((p) => p.kosten).reduce((s, p) => s + (p.bezahlt || 0) - (p.kosten || 0), 0));
   $('bPlan').textContent = eur(plan); $('bPaid').textContent = eur(paid); $('bOpen').textContent = eur(posten.reduce((s, p) => s + restCost(p), 0));
-  $('bDelta').innerHTML = closed.length ? `${closed.length} von ${posten.length} abgeschlossen · <b>${eur(Math.abs(delta))} ${delta <= 0 ? 'günstiger' : 'teurer'}</b> als geplant` : `${posten.length} Posten, noch keiner abgeschlossen`;
+  $('bDelta').innerHTML = closed.length ? `${closed.length} von ${posten.length} abgeschlossen · ` + (delta ? `<b>${eur(Math.abs(delta))} ${delta < 0 ? 'günstiger' : 'teurer'}</b> als geplant` : 'wie geplant') : `${posten.length} Posten, noch keiner abgeschlossen`;
   $('bLimitBtn').textContent = 'Budget: ' + eur(limit);
   const free = limit - plan; $('bFree').textContent = eur(Math.abs(free)); $('bFreeL').textContent = free >= 0 ? 'noch frei' : 'über Budget';
   $('bFree').style.color = free < 0 ? 'var(--danger)' : '';
@@ -977,7 +1053,7 @@ $('bDelete').onclick = async () => {
   try { await commit('budget', (d) => { d.posten = d.posten.filter((x) => x.id !== id); }, 'Posten gelöscht: ' + p.posten); toast('Gelöscht', 1400); }
   catch (err) { toast(err.message, 3500); }
 };
-$('bLimitBtn').onclick = () => { $('lValue').value = db.budget.limit || ''; $('dlgLimit').showModal(); };
+$('bLimitBtn').onclick = () => { $('lValue').value = db.budget.limit ? toInput(db.budget.limit) : ''; $('dlgLimit').showModal(); };
 $('limitForm').addEventListener('submit', async (e) => {
   e.preventDefault(); const v = money($('lValue').value); $('dlgLimit').close();
   try { await commit('budget', (d) => { d.limit = v; }, 'Budget-Grenze: ' + v); toast('Gespeichert', 1400); } catch (err) { toast(err.message, 3500); }
@@ -1020,7 +1096,7 @@ function renderChat() {
   }).join('');
   if (thinking) html += '<div class="typing"><i></i><i></i><i></i></div>';
   $('msgs').innerHTML = html;
-  requestAnimationFrame(() => window.scrollTo(0, document.body.scrollHeight));
+  if (view === 'chat') requestAnimationFrame(() => window.scrollTo(0, document.body.scrollHeight));
 }
 function pushChat(m) { chatLog.push(m); chatLog = chatLog.slice(-40); store.set('chat', chatLog); renderChat(); }
 
@@ -1087,7 +1163,7 @@ async function askGemini(text) {
     finally { clearTimeout(timer); }
     if (res.ok) { if (model !== cfg.model) { cfg.model = model; store.set('cfg', cfg); } break; }
     let msg = ''; try { msg = (await res.json()).error?.message || ''; } catch {}
-    if (res.status === 400 || res.status === 401 || res.status === 403) throw new Error('Gemini-Schlüssel ungültig oder gesperrt. ' + msg);
+    if (res.status === 401 || res.status === 403 || (res.status === 400 && /api key/i.test(msg))) throw new Error('Gemini-Schlüssel ungültig oder gesperrt.');
     lastErr = res.status === 429 ? 'Gemini-Limit erreicht. In ein paar Minuten nochmal versuchen.' : res.status === 503 ? 'Gemini ist gerade überlastet. Gleich nochmal versuchen.' : 'Gemini-Fehler ' + res.status + '. ' + msg;
     res = null;
   }
@@ -1143,41 +1219,65 @@ async function sendChat(text) {
     const reply = await askGemini(text);
     const ops = (Array.isArray(reply.aenderungen) ? reply.aenderungen : []).filter((o) => o && ['neu', 'aendern', 'loeschen'].includes(o.aktion))
       .map((o) => ({ ...o, liste: LISTS[o.liste] ? o.liste : 'aufgaben' }));
-    const changes = [], undo = {};
+    const changes = [], undo = [];
     const byFile = {};
     for (const op of ops) (byFile[LISTS[op.liste].file] ||= []).push(op);
     const touched = new Set();
+    let saveError = null;
     for (const [file, fileOps] of Object.entries(byFile)) {
-      const out = await commit(file, (d) => {
-        undo[file] = structuredClone(d);
-        const res = [];
-        for (const op of fileOps) {
-          const L = LISTS[op.liste]; const arr = d[L.arr];
-          if (op.aktion === 'neu') {
-            const f = L.clean({ ...L.defaults, ...(op.felder || {}) });
-            if (!L.name(f)) continue;
-            const item = { id: nextId(arr, L.prefix), ...f }; if (item.kinderVon === '') delete item.kinderVon;
-            arr.push(item); touched.add(item.id); res.push(describe(op.liste, op, null, f));
-          } else {
-            const idx = arr.findIndex((x) => x.id === op.id); if (idx < 0) continue;
-            const before = arr[idx];
-            if (op.aktion === 'loeschen') { arr.splice(idx, 1); res.push(describe(op.liste, op, before, {})); }
-            else {
-              const f = L.clean(op.felder || {}); arr[idx] = { ...before, ...f }; touched.add(op.id); res.push(describe(op.liste, op, before, f));
-              if (op.liste === 'gaeste' && f.partner) { const mate = arr.find((x) => x.name === f.partner && x.id !== op.id); if (mate) mate.partner = arr[idx].name; }
+      try {
+        const out = await commit(file, (d) => {
+          const arrKey = LISTS[fileOps[0].liste].arr; const arr = d[arrKey];
+          const before = new Map(arr.map((x) => [x.id, structuredClone(x)]));
+          const res = [];
+          for (const op of fileOps) {
+            const L = LISTS[op.liste];
+            if (op.aktion === 'neu') {
+              const f = L.clean({ ...L.defaults, ...(op.felder || {}) });
+              if (!L.name(f)) continue;
+              const item = { id: nextId(arr, L.prefix), ...f };
+              arr.push(item); if (op.liste === 'gaeste') linkGuest(arr, item, null);
+              touched.add(item.id); res.push(describe(op.liste, op, null, f));
+            } else {
+              const idx = arr.findIndex((x) => x.id === op.id); if (idx < 0) continue;
+              const prev = { ...arr[idx] };
+              if (op.aktion === 'loeschen') { arr.splice(idx, 1); if (op.liste === 'gaeste') unlinkGuest(arr, prev); res.push(describe(op.liste, op, prev, {})); }
+              else {
+                const f = L.clean(op.felder || {}); Object.assign(arr[idx], f);
+                if (op.liste === 'gaeste') linkGuest(arr, arr[idx], prev);
+                touched.add(op.id); res.push(describe(op.liste, op, prev, f));
+              }
             }
           }
-        }
-        return res;
-      }, 'Chat: ' + text.slice(0, 60));
-      changes.push(...out);
+          // Undo keeps only what this message changed (incl. linked partners), not the whole file.
+          const now = new Map(arr.map((x) => [x.id, x]));
+          const inv = { file, arr: arrKey, added: [], removed: [], changed: [] };
+          for (const [id, x] of now) { if (!before.has(id)) inv.added.push(id); else if (JSON.stringify(before.get(id)) !== JSON.stringify(x)) inv.changed.push(before.get(id)); }
+          for (const [id, x] of before) if (!now.has(id)) inv.removed.push(x);
+          if (inv.added.length || inv.removed.length || inv.changed.length) undo.push(inv);
+          return res;
+        }, 'Chat: ' + text.slice(0, 60));
+        changes.push(...out);
+      } catch (err) { saveError = err; break; }
     }
     if (touched.size) { flashIds = touched; renderAll(); setTimeout(() => { flashIds = new Set(); renderAll(); }, 15000); }
     thinking = false;
-    pushChat({ role: 'bot', text: reply.antwort || (changes.length ? 'Erledigt.' : 'Keine Änderung.'), changes, undo: changes.length ? undo : null });
+    if (changes.length || !saveError) pushChat({ role: 'bot', text: reply.antwort || (changes.length ? 'Erledigt.' : 'Keine Änderung.'), changes, undo: undo.length ? undo : null });
+    if (saveError) pushChat({ role: 'bot', error: true, text: (changes.length ? 'Nur teilweise gespeichert. ' : '') + saveError.message });
   } catch (err) {
     thinking = false;
     pushChat({ role: 'bot', error: true, text: err.message });
+  }
+}
+// Reverts one chat message: removes what it added, restores what it changed or deleted.
+async function applyUndo(undo) {
+  for (const inv of undo) {
+    await commit(inv.file, (d) => {
+      let arr = d[inv.arr].filter((x) => !inv.added.includes(x.id));
+      for (const old of inv.changed) { const i = arr.findIndex((x) => x.id === old.id); if (i >= 0) arr[i] = structuredClone(old); else arr.push(structuredClone(old)); }
+      for (const old of inv.removed) if (!arr.some((x) => x.id === old.id)) arr.push(structuredClone(old));
+      d[inv.arr] = arr;
+    }, 'Rückgängig: Chat-Änderung');
   }
 }
 $('composer').addEventListener('submit', (e) => { e.preventDefault(); sendChat($('chatinput').value.trim()); });
@@ -1187,14 +1287,15 @@ $('msgs').addEventListener('click', async (e) => {
   const m = chatLog[+b.dataset.i]; if (!m?.undo) return;
   b.disabled = true;
   try {
-    // Older chat entries stored the task list only, as an array.
-    const undo = Array.isArray(m.undo) ? { todos: { ...db.todos, todos: m.undo } } : m.undo;
-    for (const [file, snap] of Object.entries(undo)) await commit(file, (d) => { Object.keys(d).forEach((k) => delete d[k]); Object.assign(d, structuredClone(snap)); }, 'Rückgängig: Chat-Änderung');
+    if (Array.isArray(m.undo) && m.undo.length && m.undo[0].file) await applyUndo(m.undo);
+    else throw new Error('Diese ältere Änderung lässt sich nicht mehr rückgängig machen.');
     m.undone = true; m.undo = null; store.set('chat', chatLog); renderChat(); toast('Rückgängig gemacht', 1400);
   } catch (err) { b.disabled = false; toast(err.message, 3500); }
 });
 const autosize = () => { const t = $('chatinput'); t.style.height = 'auto'; t.style.height = Math.min(140, t.scrollHeight) + 'px'; $('chatsend').disabled = !t.value.trim(); };
 $('chatinput').addEventListener('input', autosize);
+$('chatinput').addEventListener('focus', () => { if (!matchMedia('(min-width: 1000px)').matches) document.body.classList.add('kb-open'); });
+$('chatinput').addEventListener('blur', () => document.body.classList.remove('kb-open'));
 $('chatinput').addEventListener('keydown', (e) => { if (e.key === 'Enter' && !e.shiftKey && !e.isComposing && matchMedia('(pointer:fine)').matches) { e.preventDefault(); $('composer').requestSubmit(); } });
 
 // ---------- settings ----------
@@ -1268,10 +1369,11 @@ $('dlgQr').addEventListener('close', () => { $('qrBox').innerHTML = ''; });
 
 // ---------- offline + updates ----------
 if ('serviceWorker' in navigator && location.protocol === 'https:') {
+  const hadController = !!navigator.serviceWorker.controller;
   navigator.serviceWorker.register('sw.js').catch(() => {});
   let reloading = false;
   navigator.serviceWorker.addEventListener('controllerchange', () => {
-    if (reloading) return;
+    if (reloading || !hadController) return;
     toast('Neue Version geladen. Tippen zum Aktualisieren.', 8000);
     $('toast').onclick = () => { reloading = true; location.reload(); };
   });
