@@ -1324,8 +1324,15 @@ function renderGuests() {
   for (const k of keys) {
     const items = groups.get(k).sort((a, b) => (a.reihenfolge ?? 999) - (b.reihenfolge ?? 999) || a.name.localeCompare(b.name, 'de'));
     const ordered = []; const placed = new Set();
-    const put = (g, kid) => { placed.add(g.id); ordered.push({ g, kid }); (kids.get(g.name) || []).sort((a, b) => a.name.localeCompare(b.name, 'de')).forEach((c) => { placed.add(c.id); ordered.push({ g: c, kid: true }); }); };
-    for (const g of items) { if (placed.has(g.id)) continue; put(g, false); const mate = g.partner && items.find((m) => m.name === g.partner && !placed.has(m.id)); if (mate) put(mate, false); }
+    // Parents first (both partners), then the children of either.
+    const addKids = (p) => (kids.get(p.name) || []).sort((a, b) => a.name.localeCompare(b.name, 'de')).forEach((c) => { if (placed.has(c.id)) return; placed.add(c.id); ordered.push({ g: c, kid: true }); });
+    for (const g of items) {
+      if (placed.has(g.id)) continue;
+      placed.add(g.id); ordered.push({ g, kid: false });
+      const mate = g.partner && items.find((m) => m.name === g.partner && !placed.has(m.id));
+      if (mate) { placed.add(mate.id); ordered.push({ g: mate, kid: false }); }
+      addKids(g); if (mate) addKids(mate);
+    }
     html += `<div class="group"><h3>${esc(k)}<span>${ordered.length}</span></h3><div class="card">`;
     for (const { g, kid } of ordered) {
       const r = g.rsvp || 'Nicht festgelegt';
