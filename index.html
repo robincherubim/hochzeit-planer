@@ -398,6 +398,7 @@ ol.steps { padding-left: 20px; margin: 0 0 12px; font-size: 15px; }
 ol.steps li { margin-bottom: 8px; }
 .code { font: 12px/1.45 ui-monospace, "Cascadia Mono", Consolas, monospace; background: var(--bg); border: 1px solid var(--line); padding: 10px 12px; white-space: pre; overflow: auto; max-height: 200px; margin: 0 0 10px; }
 #gEssen button { font-size: 12.5px; }
+#fQr svg { max-width: 190px; }
 @media (min-width: 1000px) {
   :root { --rail: 248px; }
   body { padding-left: var(--rail); }
@@ -841,14 +842,15 @@ ol.steps li { margin-bottom: 8px; }
     <div class="grabber"></div>
     <div class="sheet-head"><button type="button" class="textbtn l" data-close>Schließen</button><h3>Gäste-Formular</h3><span></span></div>
     <div id="fLinkBox" hidden>
-      <div class="subhead">Link für eure Gäste</div>
+      <div class="subhead">Link zu eurem Google-Formular</div>
       <div class="linkbox"><input id="fLink" readonly><button type="button" id="fLinkCopy">Kopieren</button></div>
       <div class="qrbox" id="fQr"></div>
       <p class="hint">Den Link auf die Hochzeitswebsite oder in die Einladung, den QR-Code auf die Karte. <a href="#" id="fOpen" onclick="return false">Formular ansehen</a></p>
     </div>
     <details class="setup" id="fSetup"><summary>Einrichtung (einmalig, etwa 5 Minuten)</summary>
       <ol class="steps">
-        <li>Am Computer <b>script.google.com</b> öffnen, mit eurem Google-Konto anmelden und auf <b>Neues Projekt</b> klicken.</li>
+        <li>Am Computer euer <b>Google-Formular zum Bearbeiten</b> öffnen (forms.google.com).</li>
+        <li>Oben rechts auf <b>⋮ (Mehr)</b> und dann <b>Apps Script</b> klicken.</li>
         <li>Den vorhandenen Code löschen, den Code unten einfügen und speichern (Strg + S).</li>
         <li>Oben rechts <b>Bereitstellen → Neue Bereitstellung</b>. Beim Zahnrad <b>Web-App</b> wählen, <b>Ausführen als: Ich</b> und <b>Zugriff: Jeder</b>. Dann <b>Bereitstellen</b>.</li>
         <li>Zugriff erlauben. Kommt „Google hat diese App nicht überprüft“: <b>Erweitert</b> und <b>Weiter zu …</b>. Das ist euer eigenes Skript.</li>
@@ -859,7 +861,7 @@ ol.steps li { margin-bottom: 8px; }
     </details>
     <div class="field"><label for="fUrl">Web-App-URL</label><input id="fUrl" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="https://script.google.com/macros/s/…/exec"></div>
     <p class="hint" id="fInfo"></p>
-    <p class="hint">Die Antworten liegen zusätzlich in der Google-Tabelle „Hochzeit RSVP Antworten“ in eurem Google Drive. Nichts kostet etwas.</p>
+    <p class="hint">Das Skript liest die Antworten nur, mit einem geheimen Schlüssel. Im Google-Formular bleibt alles wie gewohnt. Nichts kostet etwas.</p>
     <div class="stack"><button type="submit" class="primary">Speichern und prüfen</button></div>
   </form>
 </dialog>
@@ -1914,7 +1916,7 @@ function renderRsvp() {
   const all = db.gaeste.gaeste, hh = households();
   const yes = all.filter((g) => g.rsvp === 'Zusage').length, no = all.filter((g) => g.rsvp === 'Absage').length, answered = yes + no;
   $('rDone').textContent = `${answered} / ${all.length}`;
-  $('rSub').textContent = all.length ? `${Math.round(answered / all.length * 100)} % haben geantwortet` : 'Noch keine Gäste';
+  $('rSub').textContent = all.length ? `${Math.round(answered / all.length * 100)} % geantwortet · Frist ${fmtDate(RSVP_BIS)}` : 'Noch keine Gäste';
   $('rBar').style.width = (all.length ? answered / all.length * 100 : 0) + '%';
   $('rYes').textContent = yes; $('rNo').textContent = no; $('rOpen').textContent = all.length - answered;
   $('rInv').textContent = hh.filter((m) => !m.every((g) => g.eingeladen)).length;
@@ -2014,7 +2016,7 @@ async function loadInbox(force) {
 function renderInbox() {
   const box = $('rInbox');
   if (!cfg.rsvpUrl) {
-    box.innerHTML = `<div class="card rset"><div class="t">Online-Rückmeldung für eure Gäste</div><p>Gäste sagen über ein Formular selbst zu oder ab, mit Essenswunsch und Allergien. Die Antworten erscheinen hier und ihr übernehmt sie mit einem Tipp.</p><button type="button" class="secondary" data-setup>Formular einrichten</button></div>`;
+    box.innerHTML = `<div class="card rset"><div class="t">Online-Rückmeldung für eure Gäste</div><p>Eure Gäste antworten über euer Google-Formular. Einmal verbunden, erscheinen die Antworten hier und ihr übernehmt sie mit einem Tipp in die Gästeliste.</p><button type="button" class="secondary" data-setup>Google-Formular verbinden</button></div>`;
     return;
   }
   const done = new Set((db.gaeste.importiert || []).map(String));
@@ -2075,54 +2077,54 @@ $('rInbox').addEventListener('click', async (e) => {
 });
 
 // ---- setting up the form ----
-const scriptId = (u) => (/\/macros\/s\/([A-Za-z0-9_-]+)\/exec/.exec(u || '') || [])[1] || '';
-const formLink = () => { const id = scriptId(cfg.rsvpUrl); return id ? new URL('rsvp.html', location.href).href.split('#')[0] + '#e=' + id : ''; };
+const FORM_LINK = 'https://forms.gle/KSJ16S1hJYCTNHmB7';
+const RSVP_BIS = '2027-03-01';
+const formLink = () => FORM_LINK;
+// Script for the Apps Script editor of the Google Form. It only reads the answers, and only with the key.
 function appsScript(key) {
-  return `// Hochzeit Corinna & Robin: Empfänger für das RSVP-Formular.
-// Speichert jede Antwort in der Google-Tabelle "Hochzeit RSVP Antworten" in eurem Drive.
+  return `// Hochzeit Corinna & Robin: gibt die Antworten dieses Google-Formulars an den Hochzeitsplaner.
+// Liest nur. Ohne den Schlüssel bekommt niemand etwas zu sehen.
 const KEY = '${key}';
-const HEAD = ['id', 'zeit', 'name', 'kommt', 'personen', 'begleitung', 'essen', 'allergien', 'uebernachtung', 'nachricht'];
 
-function tabelle_() {
-  const props = PropertiesService.getScriptProperties();
-  let ss = null;
-  const id = props.getProperty('sheet');
-  if (id) { try { ss = SpreadsheetApp.openById(id); } catch (e) { ss = null; } }
-  if (!ss) {
-    ss = SpreadsheetApp.create('Hochzeit RSVP Antworten');
-    ss.getSheets()[0].appendRow(HEAD);
-    props.setProperty('sheet', ss.getId());
-  }
-  return ss.getSheets()[0];
-}
 function json_(o) { return ContentService.createTextOutput(JSON.stringify(o)).setMimeType(ContentService.MimeType.JSON); }
-function text_(v, n) { let t = String(v == null ? '' : v).trim().slice(0, n); if (/^[=+\\-@]/.test(t)) t = "'" + t; return t; }
 
-function doPost(e) {
-  let d = {};
-  try { d = JSON.parse(e.postData.contents); } catch (err) { return json_({ ok: false }); }
-  if (d.website) return json_({ ok: true }); // Spam-Schutz
-  const name = text_(d.name, 120);
-  if (!name) return json_({ ok: false });
-  const lock = LockService.getScriptLock();
-  lock.waitLock(10000);
-  try {
-    tabelle_().appendRow([Utilities.getUuid().slice(0, 8), new Date().toISOString(), name, d.kommt === 'nein' ? 'nein' : 'ja',
-      Math.max(1, Math.min(12, parseInt(d.personen, 10) || 1)), text_(d.begleitung, 300), text_(d.essen, 30),
-      text_(d.allergien, 300), d.uebernachtung === 'ja' ? 'ja' : 'nein', text_(d.nachricht, 1000)]);
-  } finally { lock.releaseLock(); }
-  return json_({ ok: true });
+// Findet eine Antwort über Wörter in der Frage, z. B. "Begleit" für "Vor- & Nachname der Begleitperson".
+function antwort_(r) {
+  const a = {};
+  r.getItemResponses().forEach(function (ir) {
+    const v = ir.getResponse();
+    a[ir.getItem().getTitle().trim()] = Array.isArray(v) ? v.join(', ') : String(v == null ? '' : v);
+  });
+  const titel = Object.keys(a);
+  const find = function (ja, nein) {
+    const t = titel.find(function (x) { return ja.test(x) && !(nein && nein.test(x)); });
+    return t ? a[t].trim() : '';
+  };
+  const begleitung = find(/begleit/i), kinder = find(/kind/i);
+  const anzahl = 1 + (begleitung ? 1 : 0) + (kinder ? kinder.split(/,|;|\\bund\\b|&|\\n/).filter(function (s) { return s.trim(); }).length : 0);
+  const essen = find(/essen|ernährung|menü/i);
+  return {
+    id: r.getId(),
+    zeit: r.getTimestamp().toISOString(),
+    name: find(/name/i, /begleit|kind/i),
+    kommt: /^\\s*n/i.test(find(/kommst|kommt|dabei|teilnahme/i)) ? 'nein' : 'ja',
+    personen: anzahl,
+    begleitung: [begleitung, kinder ? 'Kinder: ' + kinder : ''].filter(String).join(' · '),
+    essen: /vegan/i.test(essen) ? 'Vegan' : /vegetar/i.test(essen) ? 'Vegetarisch' : essen ? 'Alles' : '',
+    allergien: find(/allerg|unverträg/i).replace(/^(nein|keine?|-|no|\\/)\\.?$/i, ''),
+    uebernachtung: /^\\s*j/i.test(find(/übernacht|hotel/i)) ? 'ja' : 'nein',
+    nachricht: find(/nachricht|anmerkung|wünsch|sonstig/i),
+  };
 }
 
 function doGet(e) {
   if (((e && e.parameter) || {}).key !== KEY) return json_({ ok: false, error: 'key' });
-  const rows = tabelle_().getDataRange().getDisplayValues();
-  rows.shift();
-  return json_({ ok: true, antworten: rows.map((r) => Object.fromEntries(HEAD.map((h, i) => [h, r[i]]))) });
+  const antworten = FormApp.getActiveForm().getResponses().map(antwort_).filter(function (x) { return x.name; });
+  return json_({ ok: true, antworten: antworten });
 }
 
-// Einmal ausführen legt die Tabelle an und fragt die Berechtigung ab.
-function einrichten() { tabelle_(); }
+// Einmal ausführen fragt die Berechtigung ab und zeigt, wie viele Antworten es gibt.
+function testen() { Logger.log(FormApp.getActiveForm().getResponses().map(antwort_)); }
 `;
 }
 function openForm() {
