@@ -347,6 +347,16 @@ dialog.sheet::backdrop { background: rgba(20,12,8,.42); animation: fadebg .2s; }
 .side-h { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; font: italic 400 28px/1.2 var(--serif2); margin: 22px 4px 0; padding-bottom: 8px; border-bottom: 1px solid var(--line); }
 .side-h span { font: 600 10px/1 var(--label); font-style: normal; letter-spacing: .18em; text-transform: uppercase; color: var(--sage); }
 .side-col .group:first-of-type h3 { margin-top: 14px; }
+/* ---------- all areas (phone menu) ---------- */
+.navgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.navgrid button { background: var(--surface); border: 0; padding: 14px 14px 13px; text-align: left; display: grid; gap: 4px; align-content: start; min-height: 104px; color: var(--text); position: relative; }
+.navgrid button:active { background: var(--surface-2); }
+.navgrid button[aria-current="page"] { box-shadow: inset 0 0 0 1.5px var(--text); }
+.navgrid .ico { width: 34px; height: 34px; border-radius: 50%; border: 1px solid var(--line); background: var(--bg); display: grid; place-items: center; margin-bottom: 6px; }
+.navgrid svg { width: 18px; height: 18px; }
+.navgrid b { font: 400 21px/1.1 var(--serif2); }
+.navgrid small { font-size: 12.5px; color: var(--muted); line-height: 1.3; }
+.navgrid small.warn { color: var(--danger); }
 .bgrid.four { grid-template-columns: repeat(4, 1fr); }
 .bgrid.four span { display: block; line-height: 1.25; }
 .rset { padding: 18px 16px; margin-top: 12px; }
@@ -430,7 +440,7 @@ ol.steps li { margin-bottom: 8px; }
   .toast { bottom: 40px; left: calc(50% + var(--rail) / 2); }
   .composer { bottom: 24px; }
   .chatview { min-height: calc(100dvh - 120px); }
-  .mono { display: none; }
+  .mono, .menubtn { display: none; }
   #guestList, #todoList, #seatLists, #rList { display: grid; grid-template-columns: 1fr 1fr; gap: 0 24px; align-items: start; }
   #guestList > .empty, #todoList > .empty, #seatLists > .empty, #rList > .empty { grid-column: 1 / -1; }
   #rList { gap: 0 16px; }
@@ -446,7 +456,9 @@ ol.steps li { margin-bottom: 8px; }
   <div class="appbar-inner">
     <h1 id="pageTitle">Übersicht</h1>
     <span class="sync" id="sync" title="Synchronisation"></span>
-    <span class="mono" aria-hidden="true">C&thinsp;&amp;&thinsp;R</span>
+    <button class="iconbtn menubtn" id="btnMenu" aria-label="Alle Bereiche">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="6.5" height="6.5" rx="1"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1"/></svg>
+    </button>
     <button class="iconbtn" id="btnSettings" aria-label="Einstellungen">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
     </button>
@@ -869,6 +881,16 @@ ol.steps li { margin-bottom: 8px; }
     <p class="hint" id="fInfo"></p>
     <p class="hint">Das Skript liest die Antworten nur, mit einem geheimen Schlüssel. Im Google-Formular bleibt alles wie gewohnt. Nichts kostet etwas.</p>
     <div class="stack"><button type="submit" class="primary">Speichern und prüfen</button></div>
+  </form>
+</dialog>
+
+<!-- All areas -->
+<dialog class="sheet" id="dlgNav">
+  <form method="dialog">
+    <div class="grabber"></div>
+    <div class="sheet-head"><span></span><h3>Alle Bereiche</h3><button type="button" class="textbtn r" data-close>Schließen</button></div>
+    <div class="navgrid" id="navGrid"></div>
+    <div class="stack"><button type="button" class="secondary" id="navSettings">Einstellungen</button></div>
   </form>
 </dialog>
 
@@ -2190,6 +2212,30 @@ $('formForm').addEventListener('submit', async (e) => {
   await loadInbox(true);
   $('fInfo').textContent = inbox.err || `Verbunden. ${inbox.list.length} ${inbox.list.length === 1 ? 'Antwort' : 'Antworten'} im Formular. Den Link unten an eure Gäste geben.`;
 });
+
+// ---------- all areas (menu on the phone) ----------
+const NAV_ORDER = ['home', 'todos', 'ablauf', 'guests', 'rsvp', 'seating', 'budget', 'chat'];
+function navStatus(v) {
+  const todos = db.todos.todos, all = db.gaeste.gaeste, posten = db.budget.posten;
+  if (v === 'home') return [`noch ${Math.max(0, daysUntil('2027-06-26'))} Tage`];
+  if (v === 'todos') { const open = todos.filter((t) => t.status !== 'erledigt'), late = open.filter((t) => t.datum && daysUntil(t.datum) < 0).length; return [late ? `${open.length} offen · ${late} überfällig` : `${open.length} offen`, late > 0]; }
+  if (v === 'ablauf') { const n = db.ablauf.punkte.filter((p) => (p.tag || 'hochzeit') === 'hochzeit').length; return [n ? `${n} Programmpunkte` : 'noch leer']; }
+  if (v === 'guests') return [`${all.length} Gäste`];
+  if (v === 'rsvp') { const a = all.filter((g) => g.rsvp === 'Zusage' || g.rsvp === 'Absage').length; return [`${a} von ${all.length} geantwortet`]; }
+  if (v === 'seating') { const e = eligible(), s = seatMap(); return [`${e.filter((g) => s.has(g.id)).length} von ${e.length} platziert`]; }
+  if (v === 'budget') { const plan = posten.reduce((n, p) => n + effCost(p), 0), lim = db.budget.limit || 0; return [lim && plan > lim ? `${eur(plan - lim)} über Budget` : `${eur(plan)} geplant`, !!lim && plan > lim]; }
+  return ['Einfach schreiben'];
+}
+function openNav() {
+  $('navGrid').innerHTML = NAV_ORDER.map((v) => {
+    const tab = document.querySelector(`.tab[data-view="${v}"]`), [txt, warn] = navStatus(v);
+    return `<button type="button" data-nav="${v}"${v === view ? ' aria-current="page"' : ''}><span class="ico">${tab ? tab.querySelector('svg').outerHTML : ''}</span><b>${esc(TITLES[v])}</b><small${warn ? ' class="warn"' : ''}>${esc(txt)}</small></button>`;
+  }).join('');
+  $('dlgNav').showModal();
+}
+$('btnMenu').onclick = openNav;
+$('navGrid').addEventListener('click', (e) => { const b = e.target.closest('[data-nav]'); if (!b) return; $('dlgNav').close(); showView(b.dataset.nav); });
+$('navSettings').onclick = () => { $('dlgNav').close(); openSettings(); };
 
 // ---------- sheets ----------
 document.querySelectorAll('[data-close]').forEach((b) => b.addEventListener('click', () => b.closest('dialog').close()));
