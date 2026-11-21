@@ -49,6 +49,7 @@ button { cursor: pointer; }
 .mono { font: italic 400 12.5px/1 var(--serif); color: var(--text); letter-spacing: 0; border: 1px solid var(--line); border-radius: 50%; width: 40px; height: 40px; display: grid; place-items: center; flex: none; white-space: nowrap; }
 .iconbtn { width: 40px; height: 40px; display: grid; place-items: center; border-radius: 50%; border: 1px solid var(--line); background: var(--bg); color: var(--text); flex: none; }
 .iconbtn svg { width: 21px; height: 21px; }
+.iconbtn.on { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
 .sync { width: 8px; height: 8px; border-radius: 50%; background: var(--sage); flex: none; transition: background .2s; }
 .sync.busy { background: var(--warn); animation: pulse 1s infinite; }
 .sync.err { background: var(--danger); }
@@ -456,8 +457,8 @@ ol.steps li { margin-bottom: 8px; }
   <div class="appbar-inner">
     <h1 id="pageTitle">Übersicht</h1>
     <span class="sync" id="sync" title="Synchronisation"></span>
-    <button class="iconbtn menubtn" id="btnMenu" aria-label="Alle Bereiche">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="6.5" height="6.5" rx="1"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1"/></svg>
+    <button class="iconbtn menubtn" id="btnHome" aria-label="Übersicht">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 11 12 4l8.5 7"/><path d="M5.5 9.5V20h13V9.5"/><path d="M10 20v-5.5h4V20"/></svg>
     </button>
     <button class="iconbtn" id="btnSettings" aria-label="Einstellungen">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
@@ -519,7 +520,6 @@ ol.steps li { margin-bottom: 8px; }
 
   <!-- Tasks -->
   <section class="view" id="view-todos" hidden>
-    <div class="subnav"><button data-go="todos" aria-current="page">Aufgaben</button><button data-go="ablauf">Ablauf</button></div>
     <div class="seg" id="todoStatus">
       <button data-v="offen" aria-pressed="true">Offen</button>
       <button data-v="alle" aria-pressed="false">Alle</button>
@@ -567,7 +567,6 @@ ol.steps li { margin-bottom: 8px; }
 
   <!-- Day schedule -->
   <section class="view" id="view-ablauf" hidden>
-    <div class="subnav"><button data-go="todos">Aufgaben</button><button data-go="ablauf" aria-current="page">Ablauf</button></div>
     <div class="seg" id="ablaufTag">
       <button data-v="hochzeit" aria-pressed="true">Hochzeit</button>
       <button data-v="standesamt" aria-pressed="false">Standesamt</button>
@@ -661,11 +660,11 @@ ol.steps li { margin-bottom: 8px; }
 
 <nav class="tabbar" aria-label="Bereiche">
   <div class="tabbar-inner" role="tablist">
-    <button class="tab" role="tab" data-view="home" aria-selected="true">
+    <button class="tab rail" role="tab" data-view="home" aria-selected="true">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20.5s-8-4.6-8-10.4A4.6 4.6 0 0 1 12 7a4.6 4.6 0 0 1 8 3.1c0 5.8-8 10.4-8 10.4z"/></svg>Übersicht</button>
     <button class="tab" role="tab" data-view="todos" aria-selected="false">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6h11M9 12h11M9 18h11"/><path d="M3.5 6l1.2 1.2L7 5M3.5 12l1.2 1.2L7 11M3.5 18l1.2 1.2L7 17"/></svg>Aufgaben<span class="badge" id="todoBadge" hidden></span></button>
-    <button class="tab rail" role="tab" data-view="ablauf" aria-selected="false">
+    <button class="tab" role="tab" data-view="ablauf" aria-selected="false">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Ablauf</button>
     <button class="tab" role="tab" data-view="guests" aria-selected="false">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0M16 4.5a3.5 3.5 0 0 1 0 7M21.5 20a6.5 6.5 0 0 0-4-6"/></svg>Gäste</button>
@@ -884,16 +883,6 @@ ol.steps li { margin-bottom: 8px; }
   </form>
 </dialog>
 
-<!-- All areas -->
-<dialog class="sheet" id="dlgNav">
-  <form method="dialog">
-    <div class="grabber"></div>
-    <div class="sheet-head"><span></span><h3>Alle Bereiche</h3><button type="button" class="textbtn r" data-close>Schließen</button></div>
-    <div class="navgrid" id="navGrid"></div>
-    <div class="stack"><button type="button" class="secondary" id="navSettings">Einstellungen</button></div>
-  </form>
-</dialog>
-
 <!-- Settings -->
 <dialog class="sheet" id="dlgSettings">
   <form method="dialog" id="settingsForm">
@@ -943,7 +932,7 @@ const DEFAULT_MODEL = 'gemini-3.1-flash-lite';
 const FALLBACK_MODELS = ['gemini-3.1-flash-lite', 'gemini-flash-lite-latest', 'gemini-3.5-flash-lite', 'gemini-flash-latest'];
 const TITLES = { home: 'Übersicht', todos: 'Aufgaben', ablauf: 'Ablauf', guests: 'Gäste', rsvp: 'RSVP', seating: 'Sitzplan', budget: 'Budget', chat: 'Chat' };
 // On the phone Ablauf and Sitzplan live inside the Aufgaben and Gäste tabs.
-const PARENT = { ablauf: 'todos', rsvp: 'guests', seating: 'guests' };
+const PARENT = { rsvp: 'guests', seating: 'guests' };
 const $ = (id) => document.getElementById(id);
 
 // ---------- local settings ----------
@@ -2213,29 +2202,7 @@ $('formForm').addEventListener('submit', async (e) => {
   $('fInfo').textContent = inbox.err || `Verbunden. ${inbox.list.length} ${inbox.list.length === 1 ? 'Antwort' : 'Antworten'} im Formular. Den Link unten an eure Gäste geben.`;
 });
 
-// ---------- all areas (menu on the phone) ----------
-const NAV_ORDER = ['home', 'todos', 'ablauf', 'guests', 'rsvp', 'seating', 'budget', 'chat'];
-function navStatus(v) {
-  const todos = db.todos.todos, all = db.gaeste.gaeste, posten = db.budget.posten;
-  if (v === 'home') return [`noch ${Math.max(0, daysUntil('2027-06-26'))} Tage`];
-  if (v === 'todos') { const open = todos.filter((t) => t.status !== 'erledigt'), late = open.filter((t) => t.datum && daysUntil(t.datum) < 0).length; return [late ? `${open.length} offen · ${late} überfällig` : `${open.length} offen`, late > 0]; }
-  if (v === 'ablauf') { const n = db.ablauf.punkte.filter((p) => (p.tag || 'hochzeit') === 'hochzeit').length; return [n ? `${n} Programmpunkte` : 'noch leer']; }
-  if (v === 'guests') return [`${all.length} Gäste`];
-  if (v === 'rsvp') { const a = all.filter((g) => g.rsvp === 'Zusage' || g.rsvp === 'Absage').length; return [`${a} von ${all.length} geantwortet`]; }
-  if (v === 'seating') { const e = eligible(), s = seatMap(); return [`${e.filter((g) => s.has(g.id)).length} von ${e.length} platziert`]; }
-  if (v === 'budget') { const plan = posten.reduce((n, p) => n + effCost(p), 0), lim = db.budget.limit || 0; return [lim && plan > lim ? `${eur(plan - lim)} über Budget` : `${eur(plan)} geplant`, !!lim && plan > lim]; }
-  return ['Einfach schreiben'];
-}
-function openNav() {
-  $('navGrid').innerHTML = NAV_ORDER.map((v) => {
-    const tab = document.querySelector(`.tab[data-view="${v}"]`), [txt, warn] = navStatus(v);
-    return `<button type="button" data-nav="${v}"${v === view ? ' aria-current="page"' : ''}><span class="ico">${tab ? tab.querySelector('svg').outerHTML : ''}</span><b>${esc(TITLES[v])}</b><small${warn ? ' class="warn"' : ''}>${esc(txt)}</small></button>`;
-  }).join('');
-  $('dlgNav').showModal();
-}
-$('btnMenu').onclick = openNav;
-$('navGrid').addEventListener('click', (e) => { const b = e.target.closest('[data-nav]'); if (!b) return; $('dlgNav').close(); showView(b.dataset.nav); });
-$('navSettings').onclick = () => { $('dlgNav').close(); openSettings(); };
+$('btnHome').onclick = () => showView('home');
 
 // ---------- sheets ----------
 document.querySelectorAll('[data-close]').forEach((b) => b.addEventListener('click', () => b.closest('dialog').close()));
@@ -2252,6 +2219,7 @@ function showView(v) {
   $('pageTitle').textContent = TITLES[v];
   $('fab').hidden = !FAB_FOR[v];
   window.scrollTo(0, 0);
+  $('btnHome').classList.toggle('on', v === 'home');
   if (v === 'chat') renderChat();
   if (v === 'seating') renderHall();
   if (v === 'rsvp') loadInbox();
