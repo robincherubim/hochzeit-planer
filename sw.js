@@ -1,5 +1,5 @@
 // Offline cache for the app shell. Data (GitHub) and chat (Gemini) are never cached here.
-const CACHE = 'hochzeit-v13';
+const CACHE = 'hochzeit-v14';
 const SHELL = ['./', './index.html', './manifest.json', './icon-192.png', './icon-512.png', './apple-touch-icon.png', './hero.jpg'];
 
 self.addEventListener('install', (e) => {
@@ -18,6 +18,8 @@ self.addEventListener('activate', (e) => {
 self.addEventListener('fetch', (e) => {
   const url = new URL(e.request.url);
   if (e.request.method !== 'GET' || url.origin !== self.location.origin) return;
+  // Only the app itself is served from the cache; other pages (e.g. the guest form) always come from the network.
+  if (e.request.mode === 'navigate' && !/\/(index\.html)?$/.test(url.pathname)) return;
   e.respondWith(caches.open(CACHE).then(async (cache) => {
     const key = e.request.mode === 'navigate' ? './index.html' : url.pathname;
     const cached = await cache.match(key, { ignoreSearch: true });

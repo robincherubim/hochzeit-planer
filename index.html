@@ -258,7 +258,7 @@ dialog.sheet::backdrop { background: rgba(20,12,8,.42); animation: fadebg .2s; }
 .toast { position: fixed; left: 50%; bottom: calc(var(--tabbar-h) + var(--safe-b) + 84px); transform: translate(-50%, 20px); opacity: 0; background: var(--text); color: var(--bg); padding: 10px 16px; border-radius: 14px; font-size: 14px; z-index: 50; transition: opacity .2s, transform .2s; max-width: calc(100% - 32px); text-align: center; pointer-events: none; }
 .toast.show { opacity: 1; transform: translate(-50%, 0); pointer-events: auto; }
 /* ---------- sub navigation on the phone: Aufgaben | Ablauf, Gäste | Sitzplan ---------- */
-.subnav { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; padding: 4px; background: var(--surface); border-radius: 99px; margin: 8px 0 6px; }
+.subnav { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 4px; padding: 4px; background: var(--surface); border-radius: 99px; margin: 8px 0 6px; }
 .subnav button { border: 0; background: transparent; border-radius: 99px; padding: 10px 0; font: 600 10.5px/1 var(--label); letter-spacing: .16em; text-transform: uppercase; color: var(--muted); }
 .subnav button[aria-current="page"] { background: var(--bg); color: var(--text); box-shadow: 0 1px 3px rgba(42,73,57,.12); }
 .tab.rail { display: none; }
@@ -342,6 +342,62 @@ dialog.sheet::backdrop { background: rgba(20,12,8,.42); animation: fadebg .2s; }
 .palette button:active { background: var(--surface-2); }
 .palette .shape { height: 40px; display: grid; place-items: center; }
 .pv { display: block; }
+/* ---------- RSVP ---------- */
+.bgrid.four { grid-template-columns: repeat(4, 1fr); }
+.bgrid.four span { display: block; line-height: 1.25; }
+.rset { padding: 18px 16px; margin-top: 12px; }
+.rset .t { font: 400 22px/1.2 var(--serif2); }
+.rset p { color: var(--muted); font-size: 14.5px; margin: 6px 0 14px; }
+.food { display: grid; grid-template-columns: repeat(4, 1fr); }
+.food div { padding: 14px 4px 12px; text-align: center; min-width: 0; }
+.food div + div { border-left: 1px solid var(--line); }
+.food b { display: block; font: 400 28px/1.1 var(--serif2); }
+.food span { font: 600 9px/1.3 var(--label); letter-spacing: .12em; text-transform: uppercase; color: var(--sage); }
+.allerg { border-top: 1px solid var(--line); padding: 10px 14px; font-size: 14px; color: var(--muted); }
+.allerg b { display: block; font: 600 10px/1.6 var(--label); letter-spacing: .18em; text-transform: uppercase; color: var(--sage); margin-bottom: 2px; }
+.allerg div { color: var(--text); }
+.hh { margin-top: 8px; }
+.hh-head { display: flex; align-items: center; gap: 10px; padding: 12px 14px 10px; }
+.hh-head .t { flex: 1; min-width: 0; font: 400 20px/1.2 var(--serif2); }
+.invbtn { flex: none; border: 1px solid var(--line); background: var(--bg); border-radius: 99px; padding: 7px 11px; font: 500 12px/1 var(--label); color: var(--muted); white-space: nowrap; display: inline-flex; gap: 5px; align-items: center; }
+.invbtn svg { width: 13px; height: 13px; }
+.invbtn.on { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.hh-p { display: flex; align-items: center; gap: 10px; padding: 8px 14px; min-height: 54px; border-top: 1px solid var(--line); }
+.hh-p .main { flex: 1; min-width: 0; }
+.hh-p .nm { display: block; width: 100%; border: 0; background: none; text-align: left; padding: 4px 0; color: inherit; }
+.hh-p .invbtn { margin: 2px 0 4px; padding: 5px 10px; font-size: 11.5px; }
+.hh-head + .hh-p, .hh > .hh-p:first-child { border-top: 0; }
+.hh-head { border-bottom: 1px solid var(--line); }
+.hh-p .title { font-weight: 500; line-height: 1.3; }
+.hh-p .note { font-size: 13px; color: var(--muted); line-height: 1.35; }
+.rs { display: flex; flex: none; border: 1px solid var(--line); border-radius: 99px; overflow: hidden; background: var(--bg); }
+.rs button { width: 40px; height: 34px; border: 0; background: transparent; display: grid; place-items: center; color: var(--muted); padding: 0; font: 600 15px/1 var(--label); }
+.rs button + button { border-left: 1px solid var(--line); }
+.rs button svg { width: 15px; height: 15px; }
+.rs button.on.y { background: var(--accent); color: var(--accent-ink); }
+.rs button.on.o { background: var(--surface-3); color: var(--text); }
+.rs button.on.n { background: var(--danger-soft); color: var(--danger); }
+.resp { padding: 14px; margin-top: 8px; }
+.resp-top { display: flex; align-items: baseline; gap: 8px; }
+.resp-top b { flex: 1; min-width: 0; font: 400 21px/1.2 var(--serif2); }
+.resp-top small { color: var(--muted); font-size: 12px; white-space: nowrap; }
+.resp .note { font-size: 14px; color: var(--muted); margin-top: 4px; }
+.resp .note.msg { font-style: italic; color: var(--text); }
+.resp .switch { margin: 0; padding: 6px 0; font-size: 15px; }
+.resp .row2 { margin-top: 10px; }
+.resp .primary, .resp .secondary { padding: 14px; }
+.linkbox { display: flex; gap: 8px; }
+.linkbox input { flex: 1; min-width: 0; border: 1px solid var(--line); background: var(--bg); padding: 10px 12px; font-size: 14px; }
+.linkbox button { flex: none; border: 1px solid var(--text); background: var(--bg); border-radius: 99px; padding: 0 16px; font: 600 10.5px/1 var(--label); letter-spacing: .14em; text-transform: uppercase; }
+details.setup { background: var(--surface); padding: 0 14px; margin: 14px 0; }
+details.setup summary { padding: 14px 0; font-weight: 600; cursor: pointer; list-style: none; display: flex; justify-content: space-between; }
+details.setup summary::-webkit-details-marker { display: none; }
+details.setup summary::after { content: "+"; font-weight: 400; font-size: 20px; line-height: 1; }
+details.setup[open] summary::after { content: "–"; }
+ol.steps { padding-left: 20px; margin: 0 0 12px; font-size: 15px; }
+ol.steps li { margin-bottom: 8px; }
+.code { font: 12px/1.45 ui-monospace, "Cascadia Mono", Consolas, monospace; background: var(--bg); border: 1px solid var(--line); padding: 10px 12px; white-space: pre; overflow: auto; max-height: 200px; margin: 0 0 10px; }
+#gEssen button { font-size: 12.5px; }
 @media (min-width: 1000px) {
   :root { --rail: 248px; }
   body { padding-left: var(--rail); }
@@ -370,8 +426,9 @@ dialog.sheet::backdrop { background: rgba(20,12,8,.42); animation: fadebg .2s; }
   .composer { bottom: 24px; }
   .chatview { min-height: calc(100dvh - 120px); }
   .mono { display: none; }
-  #guestList, #todoList, #seatLists { display: grid; grid-template-columns: 1fr 1fr; gap: 0 24px; align-items: start; }
-  #guestList > .empty, #todoList > .empty, #seatLists > .empty { grid-column: 1 / -1; }
+  #guestList, #todoList, #seatLists, #rList { display: grid; grid-template-columns: 1fr 1fr; gap: 0 24px; align-items: start; }
+  #guestList > .empty, #todoList > .empty, #seatLists > .empty, #rList > .empty { grid-column: 1 / -1; }
+  #rList { gap: 0 16px; }
 }
 @media (max-width: 360px) { .stats3 { grid-template-columns: repeat(2, 1fr); } .hero .days { font-size: 54px; } }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
@@ -466,7 +523,7 @@ dialog.sheet::backdrop { background: rgba(20,12,8,.42); animation: fadebg .2s; }
 
   <!-- Guests -->
   <section class="view" id="view-guests" hidden>
-    <div class="subnav"><button data-go="guests" aria-current="page">Gäste</button><button data-go="seating">Sitzplan</button></div>
+    <div class="subnav"><button data-go="guests" aria-current="page">Gäste</button><button data-go="rsvp">RSVP</button><button data-go="seating">Sitzplan</button></div>
     <div class="seg" id="guestEvent">
       <button data-v="hochzeit" aria-pressed="true">Hochzeit</button>
       <button data-v="standesamt" aria-pressed="false">Standesamt</button>
@@ -500,9 +557,40 @@ dialog.sheet::backdrop { background: rgba(20,12,8,.42); animation: fadebg .2s; }
     <div id="ablaufList"></div>
   </section>
 
+  <!-- RSVP -->
+  <section class="view" id="view-rsvp" hidden>
+    <div class="subnav"><button data-go="guests">Gäste</button><button data-go="rsvp" aria-current="page">RSVP</button><button data-go="seating">Sitzplan</button></div>
+    <div class="bhero">
+      <div class="top">
+        <div><div class="small">Rückmeldungen</div><div class="big num" id="rDone">–</div><div class="bdelta" id="rSub"></div></div>
+        <button class="limit" id="rFormBtn">Gäste-Formular</button>
+      </div>
+      <div class="bar"><i id="rBar" style="width:0"></i></div>
+      <div class="bgrid four">
+        <div><b class="num" id="rYes">–</b><span>Zusagen</span></div>
+        <div><b class="num" id="rNo">–</b><span>Absagen</span></div>
+        <div><b class="num" id="rOpen">–</b><span>offen</span></div>
+        <div><b class="num" id="rInv">–</b><span>Einladungen offen</span></div>
+      </div>
+    </div>
+    <div id="rInbox"></div>
+    <div class="section-title"><h2>Essen und Wünsche</h2><button id="rExport">Export</button></div>
+    <div class="card" id="rFood"></div>
+    <div class="section-title"><h2>Haushalte</h2></div>
+    <div class="chips" id="rFilter">
+      <button class="chip" data-v="" aria-pressed="true">Alle</button>
+      <button class="chip" data-v="@Nicht festgelegt" aria-pressed="false">Noch offen</button>
+      <button class="chip" data-v="@Zusage" aria-pressed="false">Zusage</button>
+      <button class="chip" data-v="@Absage" aria-pressed="false">Absage</button>
+      <button class="chip" data-v="@inv" aria-pressed="false">Einladung offen</button>
+    </div>
+    <div class="searchrow"><input class="search" id="rSearch" type="search" placeholder="Gäste suchen" enterkeyhint="search" autocomplete="off"></div>
+    <div id="rList"></div>
+  </section>
+
   <!-- Seating plan -->
   <section class="view" id="view-seating" hidden>
-    <div class="subnav"><button data-go="guests">Gäste</button><button data-go="seating" aria-current="page">Sitzplan</button></div>
+    <div class="subnav"><button data-go="guests">Gäste</button><button data-go="rsvp">RSVP</button><button data-go="seating" aria-current="page">Sitzplan</button></div>
     <div class="stats3">
       <div class="stat"><b class="num" id="sTables">–</b><span>Tische</span></div>
       <div class="stat"><b class="num" id="sSeats">–</b><span>Plätze</span></div>
@@ -562,6 +650,8 @@ dialog.sheet::backdrop { background: rgba(20,12,8,.42); animation: fadebg .2s; }
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Ablauf</button>
     <button class="tab" role="tab" data-view="guests" aria-selected="false">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0M16 4.5a3.5 3.5 0 0 1 0 7M21.5 20a6.5 6.5 0 0 0-4-6"/></svg>Gäste</button>
+    <button class="tab rail" role="tab" data-view="rsvp" aria-selected="false">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="1.5"/><path d="M3.5 6.5l8.5 6.5 8.5-6.5"/></svg>RSVP</button>
     <button class="tab rail" role="tab" data-view="seating" aria-selected="false">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="3.5" r="1.2"/><circle cx="12" cy="20.5" r="1.2"/><circle cx="3.5" cy="12" r="1.2"/><circle cx="20.5" cy="12" r="1.2"/></svg>Sitzplan</button>
     <button class="tab" role="tab" data-view="budget" aria-selected="false">
@@ -618,6 +708,13 @@ dialog.sheet::backdrop { background: rgba(20,12,8,.42); animation: fadebg .2s; }
     </div>
     <div class="field"><label for="gKind">Kind von</label><input id="gKind" list="dlNamen" autocomplete="off" placeholder="leer = erwachsen"></div>
     <label class="switch">Auch beim Standesamt <input type="checkbox" id="gStd"></label>
+    <label class="switch">Einladung verschickt <input type="checkbox" id="gInv"></label>
+    <div class="field"><label>Essen</label>
+      <div class="optrow" id="gEssen"><button type="button" data-v="Alles">Alles</button><button type="button" data-v="Vegetarisch">Vegetarisch</button><button type="button" data-v="Vegan">Vegan</button><button type="button" data-v="">Offen</button></div>
+    </div>
+    <div class="field"><label for="gAllerg">Allergien und Unverträglichkeiten</label><input id="gAllerg" autocomplete="off" placeholder="z. B. Nüsse, Laktose"></div>
+    <label class="switch">Braucht Übernachtung <input type="checkbox" id="gHotel"></label>
+    <div class="field" id="gMsgF" hidden><label>Aus dem Gäste-Formular</label><p class="hint" id="gMsg" style="margin:0;white-space:pre-line"></p></div>
     <div class="stack" id="gExisting"><button type="button" class="danger" id="gDelete">Gast löschen</button></div>
   </form>
 </dialog>
@@ -738,6 +835,35 @@ dialog.sheet::backdrop { background: rgba(20,12,8,.42); animation: fadebg .2s; }
   </form>
 </dialog>
 
+<!-- Guest form (RSVP) -->
+<dialog class="sheet" id="dlgForm">
+  <form method="dialog" id="formForm">
+    <div class="grabber"></div>
+    <div class="sheet-head"><button type="button" class="textbtn l" data-close>Schließen</button><h3>Gäste-Formular</h3><span></span></div>
+    <div id="fLinkBox" hidden>
+      <div class="subhead">Link für eure Gäste</div>
+      <div class="linkbox"><input id="fLink" readonly><button type="button" id="fLinkCopy">Kopieren</button></div>
+      <div class="qrbox" id="fQr"></div>
+      <p class="hint">Den Link auf die Hochzeitswebsite oder in die Einladung, den QR-Code auf die Karte. <a href="#" id="fOpen" onclick="return false">Formular ansehen</a></p>
+    </div>
+    <details class="setup" id="fSetup"><summary>Einrichtung (einmalig, etwa 5 Minuten)</summary>
+      <ol class="steps">
+        <li>Am Computer <b>script.google.com</b> öffnen, mit eurem Google-Konto anmelden und auf <b>Neues Projekt</b> klicken.</li>
+        <li>Den vorhandenen Code löschen, den Code unten einfügen und speichern (Strg + S).</li>
+        <li>Oben rechts <b>Bereitstellen → Neue Bereitstellung</b>. Beim Zahnrad <b>Web-App</b> wählen, <b>Ausführen als: Ich</b> und <b>Zugriff: Jeder</b>. Dann <b>Bereitstellen</b>.</li>
+        <li>Zugriff erlauben. Kommt „Google hat diese App nicht überprüft“: <b>Erweitert</b> und <b>Weiter zu …</b>. Das ist euer eigenes Skript.</li>
+        <li>Die <b>Web-App-URL</b> kopieren und unten einfügen.</li>
+      </ol>
+      <pre class="code" id="fCode"></pre>
+      <button type="button" class="secondary" id="fCopy" style="margin-bottom:14px">Code kopieren</button>
+    </details>
+    <div class="field"><label for="fUrl">Web-App-URL</label><input id="fUrl" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="https://script.google.com/macros/s/…/exec"></div>
+    <p class="hint" id="fInfo"></p>
+    <p class="hint">Die Antworten liegen zusätzlich in der Google-Tabelle „Hochzeit RSVP Antworten“ in eurem Google Drive. Nichts kostet etwas.</p>
+    <div class="stack"><button type="submit" class="primary">Speichern und prüfen</button></div>
+  </form>
+</dialog>
+
 <!-- Settings -->
 <dialog class="sheet" id="dlgSettings">
   <form method="dialog" id="settingsForm">
@@ -782,11 +908,12 @@ const EMPTY = { todos: () => ({ version: 1, todos: [] }), gaeste: () => ({ versi
 const ARR = { todos: 'todos', gaeste: 'gaeste', budget: 'posten', ablauf: 'punkte', sitzplan: 'elemente' };
 const PEOPLE = ['Robin', 'Corinna', 'Beide', 'Nicht zugewiesen'];
 const RSVP = ['Zusage', 'Nicht festgelegt', 'Absage'];
+const ESSEN = ['Alles', 'Vegetarisch', 'Vegan'];
 const DEFAULT_MODEL = 'gemini-3.1-flash-lite';
 const FALLBACK_MODELS = ['gemini-3.1-flash-lite', 'gemini-flash-lite-latest', 'gemini-3.5-flash-lite', 'gemini-flash-latest'];
-const TITLES = { home: 'Übersicht', todos: 'Aufgaben', ablauf: 'Ablauf', guests: 'Gäste', seating: 'Sitzplan', budget: 'Budget', chat: 'Chat' };
+const TITLES = { home: 'Übersicht', todos: 'Aufgaben', ablauf: 'Ablauf', guests: 'Gäste', rsvp: 'RSVP', seating: 'Sitzplan', budget: 'Budget', chat: 'Chat' };
 // On the phone Ablauf and Sitzplan live inside the Aufgaben and Gäste tabs.
-const PARENT = { ablauf: 'todos', seating: 'guests' };
+const PARENT = { ablauf: 'todos', rsvp: 'guests', seating: 'guests' };
 const $ = (id) => document.getElementById(id);
 
 // ---------- local settings ----------
@@ -794,7 +921,7 @@ const store = {
   get(k, d) { try { const v = localStorage.getItem('hz_' + k); return v === null ? d : JSON.parse(v); } catch { return d; } },
   set(k, v) { try { localStorage.setItem('hz_' + k, JSON.stringify(v)); } catch {} },
 };
-let cfg = Object.assign({ owner: '', repo: 'hochzeit-daten', token: '', gemini: '', model: DEFAULT_MODEL }, store.get('cfg', {}));
+let cfg = Object.assign({ owner: '', repo: 'hochzeit-daten', token: '', gemini: '', model: DEFAULT_MODEL, rsvpUrl: '', rsvpKey: '' }, store.get('cfg', {}));
 if (!cfg.model || cfg.model === 'gemini-2.5-flash') cfg.model = DEFAULT_MODEL;
 const hasGitHub = () => !!(cfg.owner && cfg.repo && cfg.token);
 
@@ -846,6 +973,12 @@ function cleanGuest(f) {
   if ('rsvp' in f) o.rsvp = RSVP.includes(f.rsvp) ? f.rsvp : 'Nicht festgelegt';
   if ('standesamt' in f) o.standesamt = f.standesamt === true || f.standesamt === 'true';
   if ('kinderVon' in f) o.kinderVon = String(f.kinderVon || '').trim();
+  if ('eingeladen' in f) o.eingeladen = f.eingeladen === true || f.eingeladen === 'true';
+  if ('essen' in f) o.essen = ESSEN.includes(f.essen) ? f.essen : '';
+  if ('allergien' in f) o.allergien = String(f.allergien || '').trim().slice(0, 300);
+  if ('uebernachtung' in f) o.uebernachtung = f.uebernachtung === true || f.uebernachtung === 'true';
+  if ('rsvpNotiz' in f) o.rsvpNotiz = String(f.rsvpNotiz || '').trim().slice(0, 1500);
+  if ('rsvpAm' in f) o.rsvpAm = validIso(f.rsvpAm) ? f.rsvpAm : '';
   return o;
 }
 function cleanPosten(f) {
@@ -992,6 +1125,7 @@ async function refresh(quiet) {
   } finally {
     busy--; setSync(ok ? (busy ? 'busy' : '') : 'err');
     try { renderAll(); } catch (e) { console.error(e); }
+    if (view === 'rsvp') loadInbox();
   }
 }
 
@@ -1112,7 +1246,7 @@ $('todoList').addEventListener('click', (e) => {
 
 let editTodo = null;
 function optSet(groupId, v) { pressed(groupId, v); $(groupId).dataset.value = v; }
-['tWer', 'gRsvp', 'gSeite', 'pTag'].forEach((id) => $(id).addEventListener('click', (e) => { const b = e.target.closest('[data-v]'); if (b) optSet(id, b.dataset.v); }));
+['tWer', 'gRsvp', 'gSeite', 'pTag', 'gEssen'].forEach((id) => $(id).addEventListener('click', (e) => { const b = e.target.closest('[data-v]'); if (b) optSet(id, b.dataset.v); }));
 function openTodo(t) {
   if (!t && t !== null) return;
   editTodo = t ? t.id : null;
@@ -1208,13 +1342,15 @@ function openGuest(g) {
   $('gName').value = g?.name || ''; $('gFamilie').value = g?.familie || ''; $('gPartner').value = g?.partner || ''; $('gKind').value = g?.kinderVon || '';
   optSet('gRsvp', g?.rsvp || 'Nicht festgelegt'); optSet('gSeite', g ? (g.seite || '') : (['Braut', 'Bräutigam'].includes(gf.f) ? gf.f : ''));
   $('gStd').checked = g ? !!g.standesamt : gf.e === 'standesamt';
+  $('gInv').checked = !!g?.eingeladen; optSet('gEssen', g?.essen || ''); $('gAllerg').value = g?.allergien || ''; $('gHotel').checked = !!g?.uebernachtung;
+  $('gMsgF').hidden = !g?.rsvpNotiz; $('gMsg').textContent = (g?.rsvpNotiz || '') + (g?.rsvpAm ? `\n(Formular vom ${fmtDate(g.rsvpAm)})` : '');
   $('gExisting').hidden = !g;
   $('dlgGuest').showModal();
   if (!g) setTimeout(() => $('gName').focus(), 300);
 }
 $('guestForm').addEventListener('submit', async (e) => {
   e.preventDefault();
-  const f = cleanGuest({ name: $('gName').value, familie: $('gFamilie').value, partner: $('gPartner').value, kinderVon: $('gKind').value, rsvp: $('gRsvp').dataset.value, seite: $('gSeite').dataset.value, standesamt: $('gStd').checked });
+  const f = cleanGuest({ name: $('gName').value, familie: $('gFamilie').value, partner: $('gPartner').value, kinderVon: $('gKind').value, rsvp: $('gRsvp').dataset.value, seite: $('gSeite').dataset.value, standesamt: $('gStd').checked, eingeladen: $('gInv').checked, essen: $('gEssen').dataset.value, allergien: $('gAllerg').value, uebernachtung: $('gHotel').checked });
   if (!f.name) { $('gName').focus(); return; }
   $('dlgGuest').close(); const id = editGuest;
   try {
@@ -1747,6 +1883,286 @@ $('seatLists').addEventListener('click', (e) => {
   const g = e.target.closest('[data-guest]'); if (g) { const x = db.gaeste.gaeste.find((y) => y.id === g.dataset.guest); if (x) openPick(x); }
 });
 
+// ---------- RSVP ----------
+const rf = Object.assign({ f: '' }, store.get('f_rsvp', {}));
+const inbox = { list: [], err: '', loading: false, at: 0 };
+const ICON_Y = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
+const ICON_N = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>';
+// Everyone in one household: the guest, partner and children (whatever they answered).
+function famAll(list, g) {
+  if (g.kinderVon) return [g];
+  const mate = g.partner ? list.find((x) => x.name === g.partner && x.id !== g.id) : null;
+  const parents = new Set([g.name, mate?.name].filter(Boolean));
+  return [g, ...(mate ? [mate] : []), ...list.filter((x) => x.kinderVon && parents.has(x.kinderVon) && x.id !== g.id)];
+}
+function households() {
+  const all = db.gaeste.gaeste, names = new Set(all.map((g) => g.name)), used = new Set(), out = [];
+  const sorted = all.slice().sort((a, b) => catRank(a.familie) - catRank(b.familie) || (a.reihenfolge ?? 999) - (b.reihenfolge ?? 999) || a.name.localeCompare(b.name, 'de'));
+  for (const g of sorted) {
+    if (used.has(g.id) || (g.kinderVon && names.has(g.kinderVon))) continue;
+    const m = famAll(all, g).filter((x) => !used.has(x.id));
+    m.forEach((x) => used.add(x.id)); out.push(m);
+  }
+  for (const g of sorted) if (!used.has(g.id)) { used.add(g.id); out.push([g]); }
+  return out;
+}
+function hhName(m) {
+  const adults = m.filter((g) => !g.kinderVon), kids = m.length - adults.length;
+  return (adults.length ? adults : m).map((g) => g.name).join(' & ') + (adults.length && kids ? ` mit ${kids} ${kids === 1 ? 'Kind' : 'Kindern'}` : '');
+}
+function renderRsvp() {
+  const all = db.gaeste.gaeste, hh = households();
+  const yes = all.filter((g) => g.rsvp === 'Zusage').length, no = all.filter((g) => g.rsvp === 'Absage').length, answered = yes + no;
+  $('rDone').textContent = `${answered} / ${all.length}`;
+  $('rSub').textContent = all.length ? `${Math.round(answered / all.length * 100)} % haben geantwortet` : 'Noch keine Gäste';
+  $('rBar').style.width = (all.length ? answered / all.length * 100 : 0) + '%';
+  $('rYes').textContent = yes; $('rNo').textContent = no; $('rOpen').textContent = all.length - answered;
+  $('rInv').textContent = hh.filter((m) => !m.every((g) => g.eingeladen)).length;
+  // Catering: only guests who said yes.
+  const come = all.filter((g) => g.rsvp === 'Zusage'), adults = come.filter((g) => !g.kinderVon);
+  const cnt = (v) => adults.filter((g) => g.essen === v).length;
+  const cells = [['Alles', cnt('Alles')], ['Vegetarisch', cnt('Vegetarisch')], ['Vegan', cnt('Vegan')], ['Kinder', come.length - adults.length]];
+  const unknown = adults.filter((g) => !g.essen).length, hotel = come.filter((g) => g.uebernachtung).length;
+  const allerg = all.filter((g) => g.allergien && g.rsvp !== 'Absage');
+  $('rFood').innerHTML = `<div class="food">${cells.map(([l, n]) => `<div><b class="num">${n}</b><span>${l}</span></div>`).join('')}</div>
+    <div class="allerg">${unknown ? `${unknown} ${unknown === 1 ? 'Zusage' : 'Zusagen'} ohne Essenswunsch` : come.length ? 'Alle Essenswünsche bekannt' : 'Zählt, sobald Zusagen da sind'}${hotel ? ` · ${hotel} mit Übernachtung` : ''}</div>
+    ${allerg.length ? `<div class="allerg"><b>Allergien und Unverträglichkeiten</b>${allerg.map((g) => `<div>${esc(g.name)}: ${esc(g.allergien)}</div>`).join('')}</div>` : ''}`;
+  pressed('rFilter', rf.f);
+  const q = $('rSearch').value.trim().toLowerCase();
+  const match = (g) => !rf.f || (rf.f === '@inv' ? !g.eingeladen : (g.rsvp || 'Nicht festgelegt') === rf.f.slice(1));
+  const list = hh.filter((m) => m.some(match) && (!q || m.some((g) => [g.name, g.familie].join(' ').toLowerCase().includes(q))));
+  const btn = (g, v, c, icon, label) => `<button class="${c}${(g.rsvp || 'Nicht festgelegt') === v ? ' on' : ''}" data-r="${v}" aria-label="${label}" aria-pressed="${(g.rsvp || 'Nicht festgelegt') === v}">${icon}</button>`;
+  $('rList').innerHTML = list.length ? list.map((m) => {
+    const inv = m.every((g) => g.eingeladen);
+    const invBtn = `<button class="invbtn${inv ? ' on' : ''}" data-inv>${inv ? ICON_Y + 'Eingeladen' : 'Einladung offen'}</button>`, single = m.length === 1;
+    // One person: no extra header, the invitation button sits under the name.
+    return `<div class="card hh" data-hh="${esc(m.map((g) => g.id).join(','))}">${single ? '' : `<div class="hh-head"><div class="t">${esc(hhName(m))}</div>${invBtn}</div>`}` +
+      m.map((g) => {
+        const sub = [g.kinderVon ? 'Kind' : g.familie, g.essen, g.allergien ? 'Allergie: ' + g.allergien : '', g.uebernachtung ? 'Übernachtung' : '', flashIds.has(g.id) ? 'geändert' : ''].filter(Boolean).join(' · ');
+        return `<div class="hh-p" data-id="${esc(g.id)}"><div class="main"><button class="nm" data-open><div class="title">${esc(g.name)}</div>${sub ? `<div class="note">${esc(sub)}</div>` : ''}</button>${single ? invBtn : ''}</div>
+          <div class="rs" role="group" aria-label="Rückmeldung">${btn(g, 'Zusage', 'y', ICON_Y, 'Zusage')}${btn(g, 'Nicht festgelegt', 'o', '?', 'Offen')}${btn(g, 'Absage', 'n', ICON_N, 'Absage')}</div></div>`;
+      }).join('') + '</div>';
+  }).join('') : `<div class="empty">${all.length ? 'Niemand gefunden.' : 'Noch keine Gäste.'}</div>`;
+  renderInbox();
+}
+bindGroup('rFilter', rf, 'f', 'f_rsvp', renderRsvp);
+$('rSearch').addEventListener('input', renderRsvp);
+async function quickGuests(ids, f, msg) {
+  for (const id of ids) { const g = db.gaeste.gaeste.find((x) => x.id === id); if (g) Object.assign(g, f); }
+  renderAll(); if (navigator.vibrate) navigator.vibrate(10);
+  try { await commit('gaeste', (d) => { for (const id of ids) { const g = d.gaeste.find((x) => x.id === id); if (g) Object.assign(g, f); } }, msg); }
+  catch (err) { toast(err.message, 3500); refresh(true); }
+}
+$('rList').addEventListener('click', (e) => {
+  const box = e.target.closest('[data-hh]'); if (!box) return;
+  const ids = box.dataset.hh.split(','), byId = guestById();
+  if (e.target.closest('[data-inv]')) {
+    const on = !ids.every((id) => byId.get(id)?.eingeladen);
+    quickGuests(ids, { eingeladen: on }, (on ? 'Eingeladen: ' : 'Einladung offen: ') + ids.map((id) => byId.get(id)?.name).join(', '));
+    return;
+  }
+  const p = e.target.closest('[data-id]'); if (!p) return;
+  const r = e.target.closest('[data-r]');
+  if (r) { const g = byId.get(p.dataset.id); if (g && g.rsvp !== r.dataset.r) quickGuests([g.id], { rsvp: r.dataset.r }, `RSVP ${g.name}: ${r.dataset.r}`); return; }
+  if (e.target.closest('[data-open]')) openGuest(byId.get(p.dataset.id));
+});
+$('rExport').onclick = () => {
+  const seats = seatMap(), cell = (v) => { let t = String(v ?? ''); if (/^[=+\-@]/.test(t)) t = "'" + t; return /[;"\n\r]/.test(t) ? '"' + t.replace(/"/g, '""') + '"' : t; };
+  const rows = [['Name', 'Seite', 'Kategorie', 'Rückmeldung', 'Einladung verschickt', 'Essen', 'Allergien', 'Übernachtung', 'Tisch', 'Standesamt', 'Partner/in', 'Kind von', 'Nachricht']];
+  for (const m of households()) for (const g of m) rows.push([g.name, g.seite, g.familie, g.rsvp || 'Nicht festgelegt', g.eingeladen ? 'ja' : 'nein', g.essen, g.allergien, g.uebernachtung ? 'ja' : '', seats.get(g.id)?.name, g.standesamt ? 'ja' : '', g.partner, g.kinderVon, g.rsvpNotiz]);
+  const csv = '﻿' + rows.map((r) => r.map(cell).join(';')).join('\r\n');
+  const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8' }));
+  a.download = `Gaesteliste-${isoToday()}.csv`; document.body.appendChild(a); a.click();
+  setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1500);
+  toast('Gästeliste als Tabelle gespeichert (öffnet in Excel)', 2600);
+};
+
+// ---- answers from the guest form (Google Apps Script in your own Google account) ----
+const normName = (s) => String(s || '').toLowerCase().replace(/\(.*?\)/g, ' ').replace(/ä/g, 'ae').replace(/ö/g, 'oe').replace(/ü/g, 'ue').replace(/ß/g, 'ss')
+  .normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9 ]+/g, ' ').trim().split(/\s+/).filter(Boolean);
+// Best guess which guest an answer belongs to; null when unsure.
+function guessGuest(name) {
+  const t = normName(name); if (!t.length) return null;
+  let best = null, score = 0;
+  for (const g of db.gaeste.gaeste) {
+    const n = normName(g.name); if (!n.length) continue;
+    let s = 0;
+    if (n.join(' ') === t.join(' ')) s = 100;
+    else if (n.every((x) => t.includes(x))) s = 85 + n.length;
+    else if (t.every((x) => n.includes(x))) s = 70 + t.length;
+    else if (n[0] === t[0] && n.length > 1 && n[n.length - 1] === t[t.length - 1]) s = 80;
+    else if (n[0] === t[0] && n[0].length >= 3) s = 40;
+    if (s > score) { score = s; best = g; }
+  }
+  return score >= 40 ? best : null;
+}
+const fixUrl = (u) => String(u || '').trim();
+async function loadInbox(force) {
+  if (!cfg.rsvpUrl || !cfg.rsvpKey || inbox.loading) return;
+  if (!force && Date.now() - inbox.at < 60000) return;
+  inbox.loading = true; renderInbox();
+  try {
+    const u = cfg.rsvpUrl + (cfg.rsvpUrl.includes('?') ? '&' : '?') + 'key=' + encodeURIComponent(cfg.rsvpKey);
+    const j = await fetch(u, { cache: 'no-store' }).then((r) => r.json());
+    if (!j.ok) throw new Error(j.error === 'key' ? 'Der Schlüssel passt nicht zum Google-Skript. Code im Skript neu einfügen und neu bereitstellen.' : 'Formular-Antworten nicht lesbar.');
+    inbox.list = (j.antworten || []).filter((a) => a && a.id && a.name).map((a) => ({ ...a, id: String(a.id) }));
+    inbox.err = ''; inbox.at = Date.now();
+  } catch (e) {
+    inbox.err = navigator.onLine === false ? 'Offline. Formular-Antworten werden geladen, sobald Internet da ist.' : /Schlüssel|lesbar/.test(e.message) ? e.message : 'Formular-Antworten konnten nicht geladen werden. Web-App-URL prüfen.';
+  } finally { inbox.loading = false; renderInbox(); }
+}
+function renderInbox() {
+  const box = $('rInbox');
+  if (!cfg.rsvpUrl) {
+    box.innerHTML = `<div class="card rset"><div class="t">Online-Rückmeldung für eure Gäste</div><p>Gäste sagen über ein Formular selbst zu oder ab, mit Essenswunsch und Allergien. Die Antworten erscheinen hier und ihr übernehmt sie mit einem Tipp.</p><button type="button" class="secondary" data-setup>Formular einrichten</button></div>`;
+    return;
+  }
+  const done = new Set((db.gaeste.importiert || []).map(String));
+  const fresh = inbox.list.filter((a) => !done.has(a.id)).sort((a, b) => String(a.zeit).localeCompare(String(b.zeit)));
+  const opts = db.gaeste.gaeste.slice().sort((a, b) => a.name.localeCompare(b.name, 'de'));
+  let html = `<div class="section-title"><h2>Neue Antworten${fresh.length ? ` · ${fresh.length}` : ''}</h2><button type="button" data-reload>${inbox.loading ? 'Lädt …' : 'Aktualisieren'}</button></div>`;
+  if (inbox.err) html += `<div class="banner">${esc(inbox.err)}</div>`;
+  if (!fresh.length) html += `<div class="card empty" style="padding:20px">${inbox.loading && !inbox.at ? 'Antworten werden geladen …' : 'Keine neuen Antworten aus dem Formular.'}</div>`;
+  html += fresh.map((a) => {
+    const yes = a.kommt !== 'nein', g = guessGuest(a.name), fam = g ? famAll(db.gaeste.gaeste, g) : [];
+    const when = a.zeit ? new Date(a.zeit).toLocaleDateString('de-DE', { day: 'numeric', month: 'short' }) : '';
+    const det = [yes && +a.personen > 1 ? a.personen + ' Personen' : '', a.begleitung ? 'mit ' + a.begleitung : '', yes ? a.essen : '', a.allergien ? 'Allergie: ' + a.allergien : '', yes && a.uebernachtung === 'ja' ? 'braucht Übernachtung' : ''].filter(Boolean).join(' · ');
+    return `<div class="card resp" data-resp="${esc(a.id)}">
+      <div class="resp-top"><b>${esc(a.name)}</b><span class="pill ${yes ? 'ok' : 'no'}">${yes ? 'Zusage' : 'Absage'}</span><small>${esc(when)}</small></div>
+      ${det ? `<div class="note">${esc(det)}</div>` : ''}${a.nachricht ? `<div class="note msg">„${esc(a.nachricht)}“</div>` : ''}
+      <div class="field" style="margin:12px 0 4px"><label>Gehört zu</label><select data-match>
+        <option value="">Neuer Gast: ${esc(a.name)}</option>${opts.map((o) => `<option value="${esc(o.id)}"${g && g.id === o.id ? ' selected' : ''}>${esc(o.name)}</option>`).join('')}</select></div>
+      <label class="switch" data-famrow${fam.length > 1 ? '' : ' hidden'}>Für alle im Haushalt übernehmen <input type="checkbox" data-fam${+a.personen > 1 || !yes ? ' checked' : ''}></label>
+      <div class="row2"><button type="button" class="secondary" data-ignore>Ignorieren</button><button type="button" class="primary" data-apply>Übernehmen</button></div></div>`;
+  }).join('');
+  box.innerHTML = html;
+}
+async function markResp(a, gid, withFam) {
+  const yes = a.kommt !== 'nein';
+  const extra = cleanGuest({ rsvp: yes ? 'Zusage' : 'Absage', eingeladen: true, rsvpAm: String(a.zeit || '').slice(0, 10),
+    rsvpNotiz: [a.nachricht, a.begleitung ? 'Begleitung: ' + a.begleitung : '', yes && +a.personen > 1 ? a.personen + ' Personen' : ''].filter(Boolean).join(' · '),
+    ...(yes && ESSEN.includes(a.essen) ? { essen: a.essen } : {}), ...(a.allergien ? { allergien: a.allergien } : {}), ...(yes ? { uebernachtung: a.uebernachtung === 'ja' } : {}) });
+  return commit('gaeste', (d) => {
+    let g = gid && d.gaeste.find((x) => x.id === gid);
+    if (!g) { g = { id: nextId(d.gaeste, 'g'), name: String(a.name).trim().slice(0, 120), familie: 'Andere', seite: '', partner: '', standesamt: false }; d.gaeste.push(g); }
+    Object.assign(g, extra);
+    if (withFam) for (const x of famAll(d.gaeste, g)) if (x !== g) { x.rsvp = extra.rsvp; x.eingeladen = true; }
+    d.importiert = [...new Set([...(d.importiert || []).map(String), a.id])];
+    return g.name;
+  }, `RSVP-Formular: ${a.name} ${yes ? 'Zusage' : 'Absage'}`);
+}
+$('rInbox').addEventListener('change', (e) => {
+  const sel = e.target.closest('[data-match]'); if (!sel) return;
+  const card = sel.closest('[data-resp]'), g = db.gaeste.gaeste.find((x) => x.id === sel.value);
+  card.querySelector('[data-famrow]').hidden = !(g && famAll(db.gaeste.gaeste, g).length > 1);
+});
+$('rInbox').addEventListener('click', async (e) => {
+  if (e.target.closest('[data-setup]')) { openForm(); return; }
+  if (e.target.closest('[data-reload]')) { loadInbox(true); return; }
+  const card = e.target.closest('[data-resp]'); if (!card) return;
+  const a = inbox.list.find((x) => x.id === card.dataset.resp); if (!a) return;
+  const apply = e.target.closest('[data-apply]'), ignore = e.target.closest('[data-ignore]');
+  if (!apply && !ignore) return;
+  card.querySelectorAll('button').forEach((b) => { b.disabled = true; });
+  try {
+    if (ignore) { await commit('gaeste', (d) => { d.importiert = [...new Set([...(d.importiert || []).map(String), a.id])]; }, 'RSVP-Formular: ignoriert'); toast('Ausgeblendet', 1400); }
+    else {
+      const famRow = card.querySelector('[data-famrow]');
+      const name = await markResp(a, card.querySelector('[data-match]').value, !famRow.hidden && card.querySelector('[data-fam]').checked);
+      toast(`Übernommen: ${name} ${a.kommt !== 'nein' ? 'kommt' : 'kommt nicht'}`, 2000);
+    }
+  } catch (err) { toast(err.message, 3500); card.querySelectorAll('button').forEach((b) => { b.disabled = false; }); }
+});
+
+// ---- setting up the form ----
+const scriptId = (u) => (/\/macros\/s\/([A-Za-z0-9_-]+)\/exec/.exec(u || '') || [])[1] || '';
+const formLink = () => { const id = scriptId(cfg.rsvpUrl); return id ? new URL('rsvp.html', location.href).href.split('#')[0] + '#e=' + id : ''; };
+function appsScript(key) {
+  return `// Hochzeit Corinna & Robin: Empfänger für das RSVP-Formular.
+// Speichert jede Antwort in der Google-Tabelle "Hochzeit RSVP Antworten" in eurem Drive.
+const KEY = '${key}';
+const HEAD = ['id', 'zeit', 'name', 'kommt', 'personen', 'begleitung', 'essen', 'allergien', 'uebernachtung', 'nachricht'];
+
+function tabelle_() {
+  const props = PropertiesService.getScriptProperties();
+  let ss = null;
+  const id = props.getProperty('sheet');
+  if (id) { try { ss = SpreadsheetApp.openById(id); } catch (e) { ss = null; } }
+  if (!ss) {
+    ss = SpreadsheetApp.create('Hochzeit RSVP Antworten');
+    ss.getSheets()[0].appendRow(HEAD);
+    props.setProperty('sheet', ss.getId());
+  }
+  return ss.getSheets()[0];
+}
+function json_(o) { return ContentService.createTextOutput(JSON.stringify(o)).setMimeType(ContentService.MimeType.JSON); }
+function text_(v, n) { let t = String(v == null ? '' : v).trim().slice(0, n); if (/^[=+\\-@]/.test(t)) t = "'" + t; return t; }
+
+function doPost(e) {
+  let d = {};
+  try { d = JSON.parse(e.postData.contents); } catch (err) { return json_({ ok: false }); }
+  if (d.website) return json_({ ok: true }); // Spam-Schutz
+  const name = text_(d.name, 120);
+  if (!name) return json_({ ok: false });
+  const lock = LockService.getScriptLock();
+  lock.waitLock(10000);
+  try {
+    tabelle_().appendRow([Utilities.getUuid().slice(0, 8), new Date().toISOString(), name, d.kommt === 'nein' ? 'nein' : 'ja',
+      Math.max(1, Math.min(12, parseInt(d.personen, 10) || 1)), text_(d.begleitung, 300), text_(d.essen, 30),
+      text_(d.allergien, 300), d.uebernachtung === 'ja' ? 'ja' : 'nein', text_(d.nachricht, 1000)]);
+  } finally { lock.releaseLock(); }
+  return json_({ ok: true });
+}
+
+function doGet(e) {
+  if (((e && e.parameter) || {}).key !== KEY) return json_({ ok: false, error: 'key' });
+  const rows = tabelle_().getDataRange().getDisplayValues();
+  rows.shift();
+  return json_({ ok: true, antworten: rows.map((r) => Object.fromEntries(HEAD.map((h, i) => [h, r[i]]))) });
+}
+
+// Einmal ausführen legt die Tabelle an und fragt die Berechtigung ab.
+function einrichten() { tabelle_(); }
+`;
+}
+function openForm() {
+  if (!cfg.rsvpKey) {
+    const b = new Uint8Array(18); crypto.getRandomValues(b);
+    cfg.rsvpKey = [...b].map((x) => x.toString(36).padStart(2, '0')).join('').slice(0, 28); store.set('cfg', cfg);
+  }
+  $('fUrl').value = cfg.rsvpUrl || ''; $('fInfo').textContent = '';
+  $('fCode').textContent = appsScript(cfg.rsvpKey);
+  $('fSetup').open = !cfg.rsvpUrl;
+  renderFormLink();
+  $('dlgForm').showModal();
+}
+async function renderFormLink() {
+  const link = formLink();
+  $('fLinkBox').hidden = !link; $('fLink').value = link; $('fQr').innerHTML = '';
+  if (!link) return;
+  try {
+    await loadScript('https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js');
+    const qr = qrcode(0, 'M'); qr.addData(link); qr.make();
+    $('fQr').innerHTML = qr.createSvgTag({ cellSize: 4, margin: 2, scalable: true });
+  } catch {}
+}
+$('rFormBtn').onclick = openForm;
+async function copyText(t, ok) { try { await navigator.clipboard.writeText(t); toast(ok, 1600); } catch { toast('Kopieren ging nicht. Bitte markieren und kopieren.', 2600); } }
+$('fCopy').onclick = () => copyText($('fCode').textContent, 'Code kopiert');
+$('fLinkCopy').onclick = () => copyText($('fLink').value, 'Link kopiert');
+$('fOpen').onclick = (e) => { e.preventDefault(); const l = formLink(); if (l) window.open(l, '_blank', 'noopener'); };
+$('formForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const u = fixUrl($('fUrl').value);
+  if (u && !/^https:\/\/script\.google\.com\/macros\/s\/[A-Za-z0-9_-]+\/exec$/.test(u)) { $('fInfo').textContent = 'Das ist nicht die Web-App-URL. Sie beginnt mit https://script.google.com/macros/s/ und endet mit /exec.'; return; }
+  cfg.rsvpUrl = u; store.set('cfg', cfg); inbox.list = []; inbox.at = 0; inbox.err = '';
+  renderFormLink();
+  if (!u) { $('dlgForm').close(); renderInbox(); return; }
+  $('fInfo').textContent = 'Verbindung wird geprüft …';
+  await loadInbox(true);
+  $('fInfo').textContent = inbox.err || `Verbunden. ${inbox.list.length} ${inbox.list.length === 1 ? 'Antwort' : 'Antworten'} im Formular. Den Link unten an eure Gäste geben.`;
+});
+
 // ---------- sheets ----------
 document.querySelectorAll('[data-close]').forEach((b) => b.addEventListener('click', () => b.closest('dialog').close()));
 document.querySelectorAll('dialog.sheet').forEach((d) => d.addEventListener('click', (e) => { if (e.target === d) d.close(); }));
@@ -1764,11 +2180,12 @@ function showView(v) {
   window.scrollTo(0, 0);
   if (v === 'chat') renderChat();
   if (v === 'seating') renderHall();
+  if (v === 'rsvp') loadInbox();
 }
 $('fab').onclick = () => FAB_FOR[view] && FAB_FOR[view]();
 document.querySelectorAll('.tab').forEach((t) => t.addEventListener('click', () => { if (t.dataset.view === view) window.scrollTo({ top: 0, behavior: 'smooth' }); else showView(t.dataset.view); }));
 addEventListener('scroll', () => $('appbar').classList.toggle('scrolled', scrollY > 4), { passive: true });
-function renderAll() { renderHome(); renderTodos(); renderAblauf(); renderGuests(); renderSeating(); renderBudget(); }
+function renderAll() { renderHome(); renderTodos(); renderAblauf(); renderGuests(); renderRsvp(); renderSeating(); renderBudget(); }
 
 // ---------- chat (Gemini) ----------
 let chatLog = store.get('chat', []);
@@ -1797,7 +2214,7 @@ Heute ist ${weekday}, ${fmtDate(isoToday())} (Zeitzone Europe/Berlin). Wer schre
 
 Es gibt fünf Listen:
 1. "aufgaben": id, aufgabe, bereich, datum (JJJJ-MM-TT oder leer), notiz, status (offen|erledigt), verantwortlich (Robin|Corinna|Beide|Nicht zugewiesen). Aufgaben fürs Standesamt haben bereich "Standesamt".
-2. "gaeste": id, name, familie (Kategorie, z. B. Freunde, Verwandte, Elternteil, Trauzeugen), seite (Braut|Bräutigam|leer), partner (Name), rsvp (Zusage|Absage|Nicht festgelegt), standesamt (true = auch beim Standesamt eingeladen), kinderVon (Name eines Elternteils, nur bei Kindern).
+2. "gaeste": id, name, familie (Kategorie, z. B. Freunde, Verwandte, Elternteil, Trauzeugen), seite (Braut|Bräutigam|leer), partner (Name), rsvp (Zusage|Absage|Nicht festgelegt), standesamt (true = auch beim Standesamt eingeladen), kinderVon (Name eines Elternteils, nur bei Kindern), eingeladen (true = Einladung verschickt), essen (Alles|Vegetarisch|Vegan|leer), allergien (Text), uebernachtung (true = braucht Übernachtung), rsvpNotiz (Nachricht aus dem Gäste-Formular, nur lesen).
 3. "budget": id, posten, kategorie, kosten (geplanter Betrag in Euro), bezahlt (tatsächlich bezahlter Betrag in Euro), abgeschlossen (true = fertig, es kommt nichts mehr dazu). Beträge als Zahl mit Punkt und bis zu zwei Nachkommastellen, z. B. 1234.5. Budget-Grenze gesamt: ${db.budget.limit || 0} €. Für Summen zählt bei abgeschlossenen Posten "bezahlt", bei offenen "kosten".
 4. "ablauf": Tagesablauf. id, tag (hochzeit = 26.06.2027 | standesamt = 11.06.2027), zeit (Beginn HH:MM), ende (HH:MM oder leer), titel, ort, wer (zuständig), notiz.
 5. "sitzplan": Tische und Bereiche im Saal "${db.sitzplan.saal.name}". id, typ (Tische: rund|eckig|tafel|braut; Bereiche: tanzflaeche|buehne|buffet|bar|eingang|sonstiges), name, plaetze, gaeste (IDs der Gäste an diesem Tisch). Einen Gast an einen Tisch setzen: "aendern" beim Tisch mit dem vollständigen neuen gaeste-Array; vom alten Tisch wird er automatisch entfernt. Partner/in und Kinder kommen mit an denselben Tisch, wenn nichts anderes gesagt wird. Neue Tische mit "neu" (typ, name, plaetze); die Position wählt die App.
@@ -1827,7 +2244,7 @@ aufgaben:
 ${JSON.stringify(db.todos.todos.map((t) => pick(t, ['id', 'aufgabe', 'bereich', 'datum', 'notiz', 'status', 'verantwortlich'])))}
 
 gaeste:
-${JSON.stringify(db.gaeste.gaeste.map((g) => pick(g, ['id', 'name', 'familie', 'seite', 'partner', 'rsvp', 'standesamt', 'kinderVon'])))}
+${JSON.stringify(db.gaeste.gaeste.map((g) => pick(g, ['id', 'name', 'familie', 'seite', 'partner', 'rsvp', 'standesamt', 'kinderVon', 'eingeladen', 'essen', 'allergien', 'uebernachtung', 'rsvpNotiz'])))}
 
 budget:
 ${JSON.stringify(db.budget.posten.map((p) => pick(p, ['id', 'posten', 'kategorie', 'kosten', 'bezahlt', 'abgeschlossen'])))}
@@ -1902,6 +2319,10 @@ function describe(listKey, op, before, f) {
   if ('abgeschlossen' in f) p.push(f.abgeschlossen ? 'abgeschlossen' : 'wieder offen');
   if (f.verantwortlich) p.push(f.verantwortlich);
   if ('standesamt' in f) p.push(f.standesamt ? 'auch Standesamt' : 'nicht beim Standesamt');
+  if ('eingeladen' in f) p.push(f.eingeladen ? 'Einladung verschickt' : 'Einladung offen');
+  if ('essen' in f) p.push(f.essen ? 'Essen: ' + f.essen : 'Essen offen');
+  if ('allergien' in f) p.push(f.allergien ? 'Allergien: ' + f.allergien : 'keine Allergien');
+  if ('uebernachtung' in f) p.push(f.uebernachtung ? 'braucht Übernachtung' : 'keine Übernachtung');
   if (f.seite) p.push(f.seite + '-Seite');
   if ('notiz' in f) p.push('Notiz aktualisiert');
   if ('partner' in f) p.push(f.partner ? 'Partner/in ' + f.partner : 'Partner/in entfernt');
@@ -2020,7 +2441,7 @@ function openSettings(info) {
 $('btnSettings').onclick = () => openSettings();
 $('settingsForm').addEventListener('submit', async (e) => {
   e.preventDefault();
-  cfg = { owner: $('sOwner').value.trim(), repo: $('sRepo').value.trim() || 'hochzeit-daten', token: $('sToken').value.trim(), gemini: $('sGemini').value.trim(), model: $('sModel').value.trim() || DEFAULT_MODEL };
+  cfg = { ...cfg, owner: $('sOwner').value.trim(), repo: $('sRepo').value.trim() || 'hochzeit-daten', token: $('sToken').value.trim(), gemini: $('sGemini').value.trim(), model: $('sModel').value.trim() || DEFAULT_MODEL };
   store.set('cfg', cfg);
   $('dlgSettings').close();
   await refresh();
@@ -2050,7 +2471,7 @@ function applySetupHash() {
   if (store.get('setupApplied', '') !== code) {
     try {
       const p = JSON.parse(fromB64url(code));
-      cfg = { owner: p.o || '', repo: p.r || 'hochzeit-daten', token: p.t || '', gemini: p.g || '', model: p.m || DEFAULT_MODEL };
+      cfg = { owner: p.o || '', repo: p.r || 'hochzeit-daten', token: p.t || '', gemini: p.g || '', model: p.m || DEFAULT_MODEL, rsvpUrl: p.u || '', rsvpKey: p.k || '' };
       store.set('cfg', cfg); store.set('setupApplied', code);
     } catch { return; }
   }
@@ -2072,7 +2493,7 @@ $('sQr').onclick = async () => {
   if (!hasGitHub() || !cfg.gemini) { $('sInfo').textContent = 'Erst alles eintragen und speichern, dann „Handy verbinden“.'; return; }
   try {
     await loadScript('https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js');
-    const url = location.origin + location.pathname + '#setup=' + toB64url(JSON.stringify({ o: cfg.owner, r: cfg.repo, t: cfg.token, g: cfg.gemini, m: cfg.model }));
+    const url = location.origin + location.pathname + '#setup=' + toB64url(JSON.stringify({ o: cfg.owner, r: cfg.repo, t: cfg.token, g: cfg.gemini, m: cfg.model, ...(cfg.rsvpUrl ? { u: cfg.rsvpUrl, k: cfg.rsvpKey } : {}) }));
     const qr = qrcode(0, 'L'); qr.addData(url); qr.make();
     $('qrBox').innerHTML = qr.createSvgTag({ cellSize: 4, margin: 2, scalable: true });
     $('dlgSettings').close(); $('dlgQr').showModal();
