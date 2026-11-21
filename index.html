@@ -1541,12 +1541,15 @@ function renderAblauf() {
 }
 bindGroup('ablaufTag', af, 't', 'f_ablauf', renderAblauf);
 $('ablaufList').addEventListener('click', async (e) => {
-  if (e.target.closest('#ablaufTpl')) {
-    const day = af.t;
+  const tpl = e.target.closest('#ablaufTpl');
+  if (tpl) {
+    // Only once, even when tapped twice, and only while the day is still empty.
+    if (tpl.disabled) return;
+    const day = af.t; tpl.disabled = true;
     try {
-      await commit('ablauf', (d) => { for (const [zeit, ende, titel] of TEMPLATE[day]) d.punkte.push({ id: nextId(d.punkte, 'a'), tag: day, zeit, ende, titel, ort: '', wer: '', notiz: '' }); }, 'Ablauf: Vorlage übernommen');
+      await commit('ablauf', (d) => { if (d.punkte.some((p) => (p.tag || 'hochzeit') === day)) return; for (const [zeit, ende, titel] of TEMPLATE[day]) d.punkte.push({ id: nextId(d.punkte, 'a'), tag: day, zeit, ende, titel, ort: '', wer: '', notiz: '' }); }, 'Ablauf: Vorlage übernommen');
       toast('Vorlage übernommen. Zeiten einfach antippen und anpassen.', 3000);
-    } catch (err) { toast(err.message, 3500); }
+    } catch (err) { tpl.disabled = false; toast(err.message, 3500); }
     return;
   }
   const b = e.target.closest('.tl-item'); if (b) openPunkt(db.ablauf.punkte.find((p) => p.id === b.dataset.id));

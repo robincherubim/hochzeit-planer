@@ -1,5 +1,5 @@
 // Offline cache for the app shell. Data (GitHub) and chat (Gemini) are never cached here.
-const CACHE = 'hochzeit-v17';
+const CACHE = 'hochzeit-v18';
 const SHELL = ['./', './index.html', './manifest.json', './icon-192.png', './icon-512.png', './apple-touch-icon.png', './hero.jpg'];
 
 self.addEventListener('install', (e) => {
