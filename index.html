@@ -1139,6 +1139,7 @@ async function refresh(quiet) {
       db[k] = d; store.set('cache_' + k, d);
     }
     ok = true;
+    syncFormCfg();
   } catch (e) {
     if (!quiet || navigator.onLine !== false) toast(navigator.onLine === false ? 'Offline. Zeige den letzten Stand.' : e.message, 3500);
   } finally {
@@ -2164,6 +2165,19 @@ function doGet(e) {
 function testen() { Logger.log(FormApp.getActiveForm().getResponses().map(antwort_)); }
 `;
 }
+// The form connection lives in gaeste.json ("formular"), next to the guests it belongs to.
+// A device that already has it but finds none in the data adds it once (older setups).
+let formPushed = false;
+function syncFormCfg() {
+  if (!hasGitHub()) return;
+  const f = db.gaeste.formular;
+  if (f && f.url && f.key) {
+    if (cfg.rsvpUrl !== f.url || cfg.rsvpKey !== f.key) { cfg.rsvpUrl = f.url; cfg.rsvpKey = f.key; store.set('cfg', cfg); inbox.list = []; inbox.at = 0; inbox.err = ''; }
+  } else if (cfg.rsvpUrl && cfg.rsvpKey && !formPushed) {
+    formPushed = true;
+    commit('gaeste', (d) => { if (!d.formular) d.formular = { url: cfg.rsvpUrl, key: cfg.rsvpKey }; }, 'RSVP-Formular verbunden').catch(() => { formPushed = false; });
+  }
+}
 function openForm() {
   if (!cfg.rsvpKey) {
     const b = new Uint8Array(18); crypto.getRandomValues(b);
@@ -2195,6 +2209,8 @@ $('formForm').addEventListener('submit', async (e) => {
   const u = fixUrl($('fUrl').value);
   if (u && !/^https:\/\/script\.google\.com\/macros\/s\/[A-Za-z0-9_-]+\/exec$/.test(u)) { $('fInfo').textContent = 'Das ist nicht die Web-App-URL. Sie beginnt mit https://script.google.com/macros/s/ und endet mit /exec.'; return; }
   cfg.rsvpUrl = u; store.set('cfg', cfg); inbox.list = []; inbox.at = 0; inbox.err = '';
+  // Saved with the private data as well, so every device (phone included) connects by itself.
+  if (hasGitHub()) commit('gaeste', (d) => { if (u) d.formular = { url: u, key: cfg.rsvpKey }; else delete d.formular; }, u ? 'RSVP-Formular verbunden' : 'RSVP-Formular getrennt').catch((err) => toast(err.message, 3500));
   renderFormLink();
   if (!u) { $('dlgForm').close(); renderInbox(); return; }
   $('fInfo').textContent = 'Verbindung wird geprüft …';
