@@ -343,6 +343,10 @@ dialog.sheet::backdrop { background: rgba(20,12,8,.42); animation: fadebg .2s; }
 .palette .shape { height: 40px; display: grid; place-items: center; }
 .pv { display: block; }
 /* ---------- RSVP ---------- */
+.sides { display: grid; gap: 8px; }
+.side-h { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; font: italic 400 28px/1.2 var(--serif2); margin: 22px 4px 0; padding-bottom: 8px; border-bottom: 1px solid var(--line); }
+.side-h span { font: 600 10px/1 var(--label); font-style: normal; letter-spacing: .18em; text-transform: uppercase; color: var(--sage); }
+.side-col .group:first-of-type h3 { margin-top: 14px; }
 .bgrid.four { grid-template-columns: repeat(4, 1fr); }
 .bgrid.four span { display: block; line-height: 1.25; }
 .rset { padding: 18px 16px; margin-top: 12px; }
@@ -430,6 +434,8 @@ ol.steps li { margin-bottom: 8px; }
   #guestList, #todoList, #seatLists, #rList { display: grid; grid-template-columns: 1fr 1fr; gap: 0 24px; align-items: start; }
   #guestList > .empty, #todoList > .empty, #seatLists > .empty, #rList > .empty { grid-column: 1 / -1; }
   #rList { gap: 0 16px; }
+  #guestList .sides, #guestList .side-rest { grid-column: 1 / -1; }
+  .sides { grid-template-columns: 1fr 1fr; gap: 0 28px; align-items: start; }
 }
 @media (max-width: 360px) { .stats3 { grid-template-columns: repeat(2, 1fr); } .hero .days { font-size: 54px; } }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
@@ -1308,8 +1314,11 @@ function renderGuests() {
   // Group by category; partners follow each other, children follow their parent.
   const kids = new Map(); const listNames = new Set(list.map((g) => g.name));
   for (const g of list) if (g.kinderVon && listNames.has(g.kinderVon)) { if (!kids.has(g.kinderVon)) kids.set(g.kinderVon, []); kids.get(g.kinderVon).push(g); }
+  // "Alle": groom's side on the left, bride's side on the right (stacked on the phone).
+  const split = !gf.f;
+  const build = (part) => {
   const groups = new Map();
-  for (const g of list) { if (g.kinderVon && listNames.has(g.kinderVon)) continue; const k = g.familie || 'Ohne Kategorie'; if (!groups.has(k)) groups.set(k, []); groups.get(k).push(g); }
+  for (const g of part) { if (g.kinderVon && listNames.has(g.kinderVon)) continue; const k = g.familie || 'Ohne Kategorie'; if (!groups.has(k)) groups.set(k, []); groups.get(k).push(g); }
   const keys = [...groups.keys()].sort((a, b) => catRank(a) - catRank(b) || a.localeCompare(b, 'de'));
   let html = '';
   for (const k of keys) {
@@ -1321,7 +1330,7 @@ function renderGuests() {
     for (const { g, kid } of ordered) {
       const r = g.rsvp || 'Nicht festgelegt';
       const pill = r === 'Zusage' ? '<span class="pill ok">Zusage</span>' : r === 'Absage' ? '<span class="pill no">Absage</span>' : '<span class="pill">offen</span>';
-      const sub = [g.partner && !kid ? '♥ ' + g.partner : '', kid ? 'Kind' : '', sideOf(g) ? sideOf(g) + '-Seite' : '', gf.e === 'hochzeit' && g.standesamt ? 'Standesamt' : '', gf.e === 'hochzeit' && seats.get(g.id) ? seats.get(g.id).name : ''].filter(Boolean).join(' · ');
+      const sub = [g.partner && !kid ? '♥ ' + g.partner : '', kid ? 'Kind' : '', !split && sideOf(g) ? sideOf(g) + '-Seite' : '', gf.e === 'hochzeit' && g.standesamt ? 'Standesamt' : '', gf.e === 'hochzeit' && seats.get(g.id) ? seats.get(g.id).name : ''].filter(Boolean).join(' · ');
       html += `<div class="item${kid ? ' kid' : ''}" data-id="${esc(g.id)}" role="button" tabindex="0">
         <div class="avatar${sideOf(g) === 'Bräutigam' ? ' b' : ''}">${esc(initials(g.name))}</div>
         <div class="main"><div class="title">${esc(g.name)}</div>${sub ? `<div class="note">${esc(sub)}</div>` : ''}</div>
@@ -1329,7 +1338,14 @@ function renderGuests() {
     }
     html += '</div></div>';
   }
-  $('guestList').innerHTML = html;
+  return html;
+  };
+  if (!split) { $('guestList').innerHTML = build(list); return; }
+  const col = (side, title) => { const part = list.filter((g) => sideOf(g) === side);
+    return `<div class="side-col"><div class="side-h">${title}<span>${part.length} ${part.length === 1 ? 'Gast' : 'Gäste'}</span></div>${part.length ? build(part) : '<div class="empty">Niemand gefunden.</div>'}</div>`; };
+  const rest = list.filter((g) => !['Bräutigam', 'Braut'].includes(sideOf(g)));
+  $('guestList').innerHTML = `<div class="sides">${col('Bräutigam', 'Bräutigam-Seite')}${col('Braut', 'Braut-Seite')}</div>`
+    + (rest.length ? `<div class="side-col side-rest"><div class="side-h">Ohne Seite<span>${rest.length}</span></div>${build(rest)}</div>` : '');
 }
 bindGroup('guestEvent', gf, 'e', 'f_guests', renderGuests);
 bindGroup('guestFilter', gf, 'f', 'f_guests', renderGuests);
